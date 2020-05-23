@@ -4,6 +4,9 @@ start:
 lint:
 	composer run-script phpcs -- --standard=PSR12 public/index.php
 
+test:
+	composer run-script phpunit tests/
+
 install:
 	composer install
 

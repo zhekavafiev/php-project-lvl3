@@ -13,7 +13,7 @@ class DomainController extends Controller
         return view('main.index');
     }
 
-    public function validateForm(Request $request)
+    public function save(Request $request)
     {
         $validator = $request->validate([
             'domain.name' => 'url'
@@ -34,6 +34,9 @@ class DomainController extends Controller
     public function view($id)
     {
         $domain = DB::select('select * from domains where id = ?', [$id]);
+        if (empty($domain)) {
+            return abort(404);
+        }
         return view('domain.domain', ['table' => $domain]);
     }
 

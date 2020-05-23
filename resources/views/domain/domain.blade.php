@@ -1,6 +1,12 @@
 @extends('layout')
 
 @section('content')
+<?php PHP_EOL ?>
+<?php PHP_EOL ?>
+<?php PHP_EOL ?>
+<?php PHP_EOL ?>
+<?php var_dump($table) ?>
+
 <table class="table table-striped">
   <tbody>
     <?php foreach ($table as $row) : ?>
