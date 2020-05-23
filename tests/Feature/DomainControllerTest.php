@@ -10,11 +10,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DomainControllerTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+    
     public function testIndex()
     {
         $response = $this->get(route('index'));
