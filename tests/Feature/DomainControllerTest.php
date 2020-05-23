@@ -13,8 +13,9 @@ class DomainControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        factory(Domain::class, 2)->make();
     }
-    
+
     public function testIndex()
     {
         $response = $this->get(route('index'));
