@@ -2,84 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Domain;
 
 class DomainController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        return view('main.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function validateForm(Request $request)
     {
-        //
+        $validator = $request->validate([
+            'domain.name' => 'url'
+        ]);
+        $name = $request->input('domain.name');
+        $domain = new Domain();
+        try {
+            $domain->name = $name;
+            $domain->save();
+            session()->flash('message', 'Domain has added');
+            return redirect()->action('DomainController@show');
+        } catch (\Exception $error) {
+            session()->flash('message', "Domen {$name} has been checked early");
+            return redirect()->action('DomainController@index');
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function view($id)
     {
-        //
+        $domain = DB::select('select * from domains where id = ?', [$id]);
+        return view('domain.domain', ['table' => $domain]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Domain  $domain
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Domain $domain)
+    public function show()
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Domain  $domain
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Domain $domain)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Domain  $domain
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Domain $domain)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Domain  $domain
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Domain $domain)
-    {
-        //
+        $table = DB::table('domains')->get();
+        return view('domains.domains', ['table' => $table]);
     }
 }

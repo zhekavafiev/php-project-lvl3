@@ -11,10 +11,20 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/1', function () {
-    return 'Hi';
-});
+// Route::get('/1', function () {
+//     return 'Hi';
+// });
+
+use App\Http\Controllers\DomainController;
+
+Route::get('/', 'DomainController@index');
+
+Route::get('/domains', 'DomainController@show')->name('domains');
+
+Route::post('/', 'DomainController@validateForm');
+
+Route::get('/domains/{id}', 'DomainController@view');
