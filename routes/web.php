@@ -17,4 +17,6 @@ Route::get('/domains', 'DomainController@show')->name('domains');
 
 Route::post('/', 'DomainController@save')->name('save');
 
-Route::get('/domains/{id}', 'DomainController@view')->name('domain');
+Route::get('/domains/{id}', 'DomainController@view');
+
+Route::post('/domains/{id}/check', 'DomainController@check');

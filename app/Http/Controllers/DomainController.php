@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Domain;
+use mysqli;
 
 class DomainController extends Controller
 {
@@ -26,8 +27,10 @@ class DomainController extends Controller
             session()->flash('message', 'Domain has added');
             return redirect()->action('DomainController@show');
         } catch (\Exception $error) {
+            $query = DB::select('Select id from domains where name = ?', [$name]);
+            $id = $query[0]->id;
             session()->flash('message', "Domen {$name} has been checked early");
-            return redirect()->action('DomainController@index');
+            return redirect()->route('domain', ['id' => $id]);
         }
     }
 
@@ -44,5 +47,11 @@ class DomainController extends Controller
     {
         $table = DB::table('domains')->get();
         return view('domains.domains', ['table' => $table]);
+    }
+
+    public function check($id, Request $request)
+    {
+        var_dump($request);
+        return redirect()->route('domains');
     }
 }
