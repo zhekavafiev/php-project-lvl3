@@ -11,6 +11,7 @@ test:
 install:
 	composer install
 	cp -n .env.example .env|| true
+	php artisan config:cache
 	php artisan key:generate
 	php artisan migrate --force
 	php artisan db:seed
