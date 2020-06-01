@@ -5,6 +5,7 @@ lint:
 	composer run-script phpcs -- --standard=PSR12 public/index.php
 
 test:
+	php artisan config:clear
 	composer run-script phpunit tests/
 
 install:

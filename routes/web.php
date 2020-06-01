@@ -11,12 +11,11 @@
 |
 */
 
-Route::get('/', 'DomainController@index')->name('index');
+Route::get('/', 'MainPageController@index')->name('main.index');
+Route::post('/', 'MainPageController@store')->name('store');
 
-Route::get('/domains', 'DomainController@show')->name('domains');
+Route::get('/domains', 'DomainController@index')->name('domains.index');
 
-Route::post('/', 'DomainController@save')->name('save');
+Route::get('/domains/{id}', 'DomainController@show')->name('show');
 
-Route::get('/domains/{id}', 'DomainController@view');
-
-Route::post('/domains/{id}/check', 'DomainController@check');
+Route::post('/domains/{id}/check', 'DomainCheckController@check')->name('check');

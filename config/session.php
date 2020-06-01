@@ -161,11 +161,11 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE', false),
+    'secure' => env('SESSION_SECURE_COOKIE', null),
 
     /*
     |--------------------------------------------------------------------------
-    | HTTP Access Only
+    | HTTP Access Onlysecure
     |--------------------------------------------------------------------------
     |
     | Setting this value to true will prevent JavaScript from accessing the

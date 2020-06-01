@@ -7,6 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Domain::class, function (Faker $faker) {
     return [
-        //
+        'name' => $faker->url,
+        'id' => $faker->randomDigitnot(0)
     ];
 });
