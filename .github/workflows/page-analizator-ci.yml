@@ -10,7 +10,6 @@ jobs:
      
     services:
       postgres:
-        image: postgres:10.8
         env:
           POSTGRES_DB: project3
         ports:
