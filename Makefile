@@ -10,7 +10,6 @@ test:
 
 install:
 	composer install
-	apt install postgresql
 	cp -n .env.example .env|| true
 	touch database/db
 	psql database/db
