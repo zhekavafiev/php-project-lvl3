@@ -51,6 +51,7 @@ class CheckDomain implements ShouldQueue
         // DB::update('update domains set updated_at = ? where id = ?', [$lastcheck, $this->check->domain_id]);
         // Artisan::call('queue:work'); // не знаю как закрыть процесс после выполненя всей очереди
         // // в данном случае при каждом Чеке будет запускаться новый процесс что быстро приведет к перерасходу памяти
-        // Artisan::call('queue:clear');// убивает не только процесс, но всю очередь может зацепить чужие задачи в очереди
+        // Artisan::call('queue:clear');
+        // убивает не только процесс, но всю очередь может зацепить чужие задачи в очереди
     }
 }
