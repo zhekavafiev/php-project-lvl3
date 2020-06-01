@@ -11,7 +11,6 @@ test:
 install:
 	composer install
 	cp -n .env.example .env|| true
-	touch database/db
 	php artisan config:cache
 	php artisan key:generate
 	php artisan migrate --force
