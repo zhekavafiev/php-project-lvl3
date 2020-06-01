@@ -58,6 +58,6 @@ class DomainCheckController extends BaseController
             'message',
             "You request has been placed in handle, please refresh page in a minute "
         );
-        return redirect()->route('show', ['id' => $id]);
+        return redirect()->route('domain', ['id' => $id]);
     }
 }

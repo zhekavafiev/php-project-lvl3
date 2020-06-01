@@ -11,11 +11,13 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', 'MainPageController@index')->name('main.index');
 Route::post('/', 'MainPageController@store')->name('store');
 
 Route::get('/domains', 'DomainController@index')->name('domains.index');
 
-Route::get('/domains/{id}', 'DomainController@show')->name('show');
+Route::get('/domains/{id}', 'DomainController@show')->name('domain');
 
 Route::post('/domains/{id}/check', 'DomainCheckController@check')->name('check');

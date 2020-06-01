@@ -2,7 +2,7 @@ start:
 	php -S localhost:8080 -t public public/index.php
 
 lint:
-	composer run-script phpcs -- --standard=PSR12 public/index.php
+	composer run-script phpcs -- --standard=PSR12 app/ tests/
 
 test:
 	php artisan config:clear

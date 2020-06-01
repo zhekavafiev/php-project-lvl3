@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Http\Request;
-use App\Jobs\CheckDomain;
-use App\Jobs\GetSeo;
-use App\DomainCheck;
 
 class DomainController extends BaseController
 {
@@ -49,7 +45,13 @@ class DomainController extends BaseController
         $table = DB::table('domains')->get()->all();
         $updateTable = array_map(function ($domain) {
             $id = $domain->id;
-            $lastCheck = DB::select('select status_code from domain_checks where domain_id = ? order by created_at desc limit 1', [$id]);
+            $lastCheck = DB::select(
+                'select status_code
+                from domain_checks
+                where domain_id = ?
+                order by created_at desc limit 1',
+                [$id]
+            );
             $domain->lastCheck = (empty($lastCheck)) ? null : $lastCheck[0]->status_code;
             return $domain;
         }, $table);
@@ -57,5 +59,4 @@ class DomainController extends BaseController
             'table' => $updateTable,
             ]);
     }
-
 }
