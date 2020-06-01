@@ -9,6 +9,7 @@ test:
 	composer run-script phpunit tests/
 
 test-ci:
+	php artisan config:clear
 	composer run-script phpunit tests -- --coverage-clover ./build/logs/clover.xml
 
 install:
