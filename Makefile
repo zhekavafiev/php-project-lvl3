@@ -8,6 +8,9 @@ test:
 	php artisan config:clear
 	composer run-script phpunit tests/
 
+test-ci:
+	composer run-script phpunit tests -- --coverage-clover ./build/logs/clover.xml
+
 install:
 	composer install
 	cp -n .env.example .env|| true
