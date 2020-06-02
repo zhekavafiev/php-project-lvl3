@@ -1,1 +1,2 @@
 chmod -R 777 storage
+touch storage/framework/sessions/JSRZjbeToJTjvzqB1R5irpmlVeHodeDEK3udwAzr
