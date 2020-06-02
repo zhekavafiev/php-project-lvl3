@@ -9,6 +9,11 @@ use Illuminate\Routing\Controller as BaseController;
 
 class MainPageController extends BaseController
 {
+    public function test()
+    {
+        return view('test');
+    }
+    
     public function index()
     {
         return view('main.index');
