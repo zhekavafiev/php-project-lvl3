@@ -14,10 +14,12 @@ test-ci:
 
 install:
 	composer install
+	npm install
 	cp -n .env.example .env|| true
+	touch project3
 	php artisan config:cache
 	php artisan key:generate
-	php artisan migrate --force
+	php artisan migrate
 	php artisan db:seed
 
 deploy:

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Routing\Controller as BaseController;
 
-class DomainController extends BaseController
+class DomainController extends Controller
 {
     public function show($id)
     {

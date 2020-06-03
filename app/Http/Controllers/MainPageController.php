@@ -5,14 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Domain;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Routing\Controller as BaseController;
 
-class MainPageController extends BaseController
+class MainPageController extends Controller
 {
-    public function test()
-    {
-        return view('test');
-    }
     
     public function index()
     {
@@ -29,15 +24,15 @@ class MainPageController extends BaseController
         $name = "{$parsedName['scheme']}://{$parsedName['host']}";
         $domain = new Domain();
         try {
-            $domain->name = $name;
-            $domain->save();
-            session()->flash('message', 'Domain has added');
-            return redirect()->action('DomainController@index');
-        } catch (\Exception $error) {
             $query = DB::select('Select id from domains where name = ?', [$name]);
             $id = $query[0]->id;
             session()->flash('message', "Domen {$name} has been checked early");
             return redirect()->route('domain', ['id' => $id]);
+        } catch (\Exception $error) {
+            $domain->name = $name;
+            $domain->save();
+            session()->flash('message', "Domain {$domain->name} has added");
+            return redirect()->action('DomainController@index');
         }
     }
 }

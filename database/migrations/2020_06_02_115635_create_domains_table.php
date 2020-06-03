@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddH1 extends Migration
+class CreateDomainsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddH1 extends Migration
      */
     public function up()
     {
-        Schema::table('domain_checks', function ($table) {
-            $table->string('h1')->nullable();
+        Schema::create('domains', function (Blueprint $table) {
+            $table->increments('id');
+            $table->text('name')->unique();
+            $table->timestamps();
         });
     }
 
@@ -25,6 +27,6 @@ class AddH1 extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('domains');
     }
 }

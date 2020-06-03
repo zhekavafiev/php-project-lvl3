@@ -1,2 +1,2 @@
-touch storage/framework/sessions/JSRZjbeToJTjvzqB1R5irpmlVeHodeDEK3udwAzr
-chmod -R 777 storage
+composer dump-autoload
+cp -n .env.example .env|| true
