@@ -21,7 +21,7 @@ class DomainControllerTest extends TestCase
         $domain = factory(Domain::class)->make();
         $id = $domain->id;
         $domain->save();
-        $response = $this->get(route('domain', ['id' => $id]));
+        $response = $this->get(route('domains.show', ['id' => $id]));
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
     }
@@ -29,7 +29,7 @@ class DomainControllerTest extends TestCase
     public function testDomainPageNotHasOnDB()
     {
         $id = rand(0, 100);
-        $response = $this->get(route('domain', ['id' => $id]));
+        $response = $this->get(route('domains.show', ['id' => $id]));
         $response->assertStatus(404);
     }
 }

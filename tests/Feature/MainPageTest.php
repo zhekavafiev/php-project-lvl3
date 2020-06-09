@@ -13,7 +13,7 @@ class MainPageTest extends TestCase
 
     public function testMainPageAviliable()
     {
-        $response = $this->get(route('main.index'));
+        $response = $this->get(route('index'));
         $response->assertStatus(200);
     }
 
@@ -23,7 +23,7 @@ class MainPageTest extends TestCase
         $data = Arr::only($domain->toArray(), ['name']);
         $parsedName = parse_url($data['name']);
         $data['name'] = "{$parsedName['scheme']}://{$parsedName['host']}";
-        $response = $this->post(route('store'), $data);
+        $response = $this->post(route('domains.store'), $data);
         $response->assertSessionHasNoErrors();
         $response->assertStatus(302);
         $this->assertDatabaseHas('domains', $data);
@@ -32,7 +32,7 @@ class MainPageTest extends TestCase
     public function testMainPageActionWithError()
     {
         $data['name'] = "1234";
-        $response = $this->post(route('store'), $data);
+        $response = $this->post(route('domains.store'), $data);
         $response->assertSessionHasErrors();
         $response->assertStatus(302);
     }
