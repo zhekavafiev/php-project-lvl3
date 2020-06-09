@@ -33,7 +33,7 @@ class DomainController extends Controller
             where domain_id = ? order by created_at desc limit 1', [$id]);
         $domain[0]->lastDescription = $queryDescription[0]->description  ?? null;
 
-        return view('domain.domain', [
+        return view('domain.show', [
             'table' => $domain,
             'checks' => $checks
             ]);
@@ -54,7 +54,7 @@ class DomainController extends Controller
             $domain->lastCheck = (empty($lastCheck)) ? null : $lastCheck[0]->status_code;
             return $domain;
         }, $table);
-        return view('domains.domains', [
+        return view('domain.index', [
             'table' => $updateTable,
             ]);
     }
