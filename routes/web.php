@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'MainPageController@index')->name('main.index');
-Route::post('/', 'MainPageController@store')->name('store');
+Route::get('/', 'MainPageController@index')->name('index');
+Route::post('/', 'DomainController@store')->name('domains.store');
 Route::get('/domains', 'DomainController@index')->name('domains.index');
-Route::get('/domains/{id}', 'DomainController@show')->name('domain');
+Route::get('/domains/{id}', 'DomainController@show')->name('domains.show');
 Route::post('/domains/{id}/check', 'DomainCheckController@check')->name('check');

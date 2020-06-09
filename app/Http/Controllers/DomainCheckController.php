@@ -27,7 +27,7 @@ class DomainCheckController extends Controller
             $description = $seo->getMetaContent('description');
             session()->flash(
                 'message',
-                "You request has been placed in handle, please refresh page in a minute "
+                "Domain {$domenName} will be checked"
             );
         } catch (\Exception $e) { // ловит несуществующие вдреса
             $status = 500;
@@ -59,6 +59,6 @@ class DomainCheckController extends Controller
                 $check->id
             ]
         );
-        return redirect()->route('domain', ['id' => $id]);
+        return redirect()->route('domains.show', ['id' => $id]);
     }
 }
