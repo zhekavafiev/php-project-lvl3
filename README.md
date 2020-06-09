@@ -1,8 +1,8 @@
 # Page Analizator
 
 ![](https://github.com/zhekavafiev/php-project-lvl3/workflows/Page-analizator-CI/badge.svg)
-[![Maintainability](https://api.codeclimate.com/v1/badges/364a37984bc1e7f9a27d/maintainability)](https://codeclimate.com/github/zhekavafiev/php-project-lvl3/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/364a37984bc1e7f9a27d/test_coverage)](https://codeclimate.com/github/zhekavafiev/php-project-lvl3/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/687423688903f9371f02/maintainability)](https://codeclimate.com/github/zhekavafiev/php-project-lvl3/maintainability)
+<a href="https://codeclimate.com/github/zhekavafiev/php-project-lvl3/test_coverage"><img src="https://api.codeclimate.com/v1/badges/687423688903f9371f02/test_coverage" /></a>
 
 [Ссылка для ознакомления](https://evgvfv-page-analizator.herokuapp.com/)
 
