@@ -8,9 +8,9 @@
         <li class="nav-item active">
           <a class="nav-link" href="/domains">Domains <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">More information</a>
-        </li>
+        </li> -->
       </ul>
     </div>
 </nav>

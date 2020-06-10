@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('content')
+@section("content")
 @if(Session::has('error'))
   <div class="alert alert-danger">  {{ Session::get('error') }}</div>
 @endif
@@ -12,7 +12,7 @@
 <link href="/../css/album.css" rel="stylesheet">
 <table class="table table-striped">
   <tbody>
-    <?php foreach ($table as $row) : ?>
+    @foreach ($table as $row)
       <h1>Site: {{ $row->name }}</h1>
       <tr>
         <td>Id</td>
@@ -42,7 +42,7 @@
         <td>Last Description</td>
         <td>{{ $row->lastDescription }}</td>
       </tr>
-    <?php endforeach; ?>
+    @endforeach
   </tbody>
 </table>
 <form class="form-inline mt-2 mt-md-0" action="/domains/{{ $row->id }}/check" method="post">
@@ -61,7 +61,7 @@
     </tr>
   </thead>
   <tbody>
-    <?php foreach ($checks as $check) : ?>
+    @foreach ($checks as $check)
       <tr>
         <th scope="row"> {{ $check->id }} </th>
         <td>{{ $check->created_at }}</td>
@@ -70,7 +70,7 @@
         <td>{{ $check->keywords }}</td>
         <td>{{ $check->description }}</td>
       </tr>
-    <?php endforeach; ?>
+    @endforeach
   </tbody>
 </table>
 

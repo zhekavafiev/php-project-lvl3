@@ -4,6 +4,7 @@
 @if(Session::has('message'))
   <div class="alert alert-success">  {{ Session::get('message') }}</div>
 @endif
+
 <table class="table">
   <thead>
     <tr>
@@ -15,7 +16,7 @@
     </tr>
   </thead>
   <tbody>
-    <?php foreach ($table as $row) : ?>
+    @foreach ($table as $row)
       <tr>
         <th scope="row"> {{ $row->id }} </th>
         <td><a href="/domains/{{ $row->id }}">{{ $row->name }}</a></td>
@@ -23,7 +24,7 @@
         <td>{{ $row->updated_at }}</td>
         <td>{{ $row->lastCheck }}</td>
       </tr>
-    <?php endforeach; ?>
+    @endforeach
   </tbody>
 </table>
 @endsection
