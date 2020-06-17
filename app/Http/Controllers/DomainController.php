@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Domain;
+use Illuminate\Pagination\Paginator as Paginator;
 use Illuminate\Support\Facades\DB;
 
 class DomainController extends Controller
 {
     public function show($id)
     {
-        $domain = DB::select('select * from domains where id = ?', [$id]);
+        $domain = DB::select('select domains.id, name, domains.created_at,
+            max(domain_checks.created_at) as last_check, h1, keywords, description, status_code
+            from domains left join domain_checks
+            on domains.id = domain_checks.domain_id
+            group by name
+            having domains.id = ?', [$id]);
         
         if (empty($domain)) {
             return abort(404);
@@ -20,42 +26,29 @@ class DomainController extends Controller
             from domain_checks 
             where domain_id = ?', [$id]);
         
-        $queryH1 = DB::select('select h1 
-            from domain_checks 
-            where domain_id = ? order by created_at desc limit 1', [$id]);
-        $domain[0]->lastH1 = $queryH1[0]->h1 ?? null;
-        
-        $queryKeywords = DB::select('select keywords 
-            from domain_checks 
-            where domain_id = ? order by created_at desc limit 1', [$id]);
-        $domain[0]->lastKeywords = $queryKeywords[0]->keywords ?? null;
-        
-        $queryDescription = DB::select('select description 
-            from domain_checks 
-            where domain_id = ? order by created_at desc limit 1', [$id]);
-        $domain[0]->lastDescription = $queryDescription[0]->description  ?? null;
-
-        return view('domain.show', [
-            'table' => $domain,
-            'checks' => $checks
-            ]);
+        return view('domain.show', compact('domain', 'checks'));
     }
 
     public function index()
     {
-        $table = DB::table('domains')->get()->all();
-        $updateTable = array_map(function ($domain) {
-            $id = $domain->id;
-            $lastCheck = DB::select(
-                'select status_code
-                from domain_checks
-                where domain_id = ?
-                order by created_at desc limit 1',
-                [$id]
-            );
-            $domain->lastCheck = (empty($lastCheck)) ? null : $lastCheck[0]->status_code;
-            return $domain;
-        }, $table);
+        $updateTable = DB::select('select domains.id, domains.name, domains.created_at, 
+            max(domain_checks.created_at) as last_check, domain_checks.status_code
+            from domains left join domain_checks
+            on domains.id = domain_checks.domain_id
+            group by name
+            order by domains.id');
+        // $chunks = array_chunk($updateTable, 3);
+        // foreach ($chunks as $key => $value) {
+        //     $paginator[$key + 1] = new Paginator($value, 3, $key + 1, [
+        //         'path' => route('domains.index')
+        //     ]);
+        // }
+        // $updateTable = Domain::paginate(3);
+        // dd($updateTable);
+        // $paginator = new Paginator($updateTable, count($updateTable), 3);
+        // $updateTable = array_slice($paginator)
+        // $paginator->setPath(route('domains.index'));
+
         return view('domain.index', [
             'table' => $updateTable,
             ]);

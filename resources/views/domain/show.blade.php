@@ -12,7 +12,7 @@
 <link href="/../css/album.css" rel="stylesheet">
 <table class="table table-striped">
   <tbody>
-    @foreach ($table as $row)
+    @foreach ($domain as $row)
       <h1>Site: {{ $row->name }}</h1>
       <tr>
         <td>Id</td>
@@ -28,19 +28,23 @@
       </tr>
       <tr>
         <td>Update</td>
-        <td>{{ $row->updated_at }}</td>
+        <td>{{ $row->last_check }}</td>
+      </tr>
+      <tr>
+        <td>Last status</td>
+        <td>{{ $row->status_code }}</td>
       </tr>
       <tr>
         <td>Last h1</td>
-        <td>{{ $row->lastH1 }}</td>
+        <td>{{ $row->h1 }}</td>
       </tr>
       <tr>
         <td>Last Keywords</td>
-        <td>{{ $row->lastKeywords }}</td>
+        <td>{{ $row->keywords }}</td>
       </tr>
       <tr>
         <td>Last Description</td>
-        <td>{{ $row->lastDescription }}</td>
+        <td>{{ $row->description }}</td>
       </tr>
     @endforeach
   </tbody>

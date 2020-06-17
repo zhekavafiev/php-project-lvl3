@@ -21,8 +21,8 @@
         <th scope="row"> {{ $row->id }} </th>
         <td><a href="/domains/{{ $row->id }}">{{ $row->name }}</a></td>
         <td>{{ $row->created_at }}</td>
-        <td>{{ $row->updated_at }}</td>
-        <td>{{ $row->lastCheck }}</td>
+        <td>{{ $row->last_check }}</td>
+        <td>{{ $row->status_code }}</td>
       </tr>
     @endforeach
   </tbody>
