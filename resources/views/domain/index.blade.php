@@ -4,7 +4,11 @@
 @if(Session::has('message'))
   <div class="alert alert-success">  {{ Session::get('message') }}</div>
 @endif
+@if(Session::has('errors'))
+  <div class="alert alert-danger">  {{ Session::get('errors') }}</div>
+@endif
 
+{{ $domains->links() }}
 <table class="table">
   <thead>
     <tr>
@@ -16,13 +20,13 @@
     </tr>
   </thead>
   <tbody>
-    @foreach ($table as $row)
+    @foreach ($domains as $domain)
       <tr>
-        <th scope="row"> {{ $row->id }} </th>
-        <td><a href="/domains/{{ $row->id }}">{{ $row->name }}</a></td>
-        <td>{{ $row->created_at }}</td>
-        <td>{{ $row->last_check }}</td>
-        <td>{{ $row->status_code }}</td>
+        <th scope="row"> {{ $domain->id }} </th>
+        <td><a href="/domains/{{ $domain->id }}">{{ $domain->name }}</a></td>
+        <td>{{ $domain->created_at }}</td>
+        <td>{{ $domain->last_check }}</td>
+        <td>{{ $domain->status_code }}</td>
       </tr>
     @endforeach
   </tbody>

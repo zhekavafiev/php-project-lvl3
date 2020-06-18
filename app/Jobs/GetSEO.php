@@ -10,7 +10,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use DiDom\Document;
 use Src\Seo\SeoHelper as SeoHelper;
-use App\DomainCheck;
 use Illuminate\Support\Facades\DB;
 
 class GetSEO implements ShouldQueue

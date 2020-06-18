@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Domain;
-use Illuminate\Pagination\Paginator as Paginator;
+use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Facades\DB;
 
 class DomainController extends Controller
@@ -29,29 +29,36 @@ class DomainController extends Controller
         return view('domain.show', compact('domain', 'checks'));
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $updateTable = DB::select('select domains.id, domains.name, domains.created_at, 
+        $page = empty($request['page']) ? 1 : $request['page'];
+        $countDomain = DB::select('select count(*) as count from domains')[0]->count;
+        $perPage = 10;
+
+        if (!is_numeric($page) || ceil($countDomain / $perPage) < $page) {
+            session()->flash(
+                'errors',
+                'You request is wrong'
+            );
+            $page = 1;
+        }
+
+        $offset = ($page - 1) * $perPage;
+
+        $domainsOnPage = DB::select('select domains.id, domains.name, domains.created_at, 
             max(domain_checks.created_at) as last_check, domain_checks.status_code
             from domains left join domain_checks
             on domains.id = domain_checks.domain_id
             group by name
-            order by domains.id');
-        // $chunks = array_chunk($updateTable, 3);
-        // foreach ($chunks as $key => $value) {
-        //     $paginator[$key + 1] = new Paginator($value, 3, $key + 1, [
-        //         'path' => route('domains.index')
-        //     ]);
-        // }
-        // $updateTable = Domain::paginate(3);
-        // dd($updateTable);
-        // $paginator = new Paginator($updateTable, count($updateTable), 3);
-        // $updateTable = array_slice($paginator)
-        // $paginator->setPath(route('domains.index'));
+            order by domains.id
+            limit ?
+            offset ?', [$perPage, $offset]);
 
-        return view('domain.index', [
-            'table' => $updateTable,
-            ]);
+        $domains = new Paginator($domainsOnPage, $countDomain, $perPage, $page, [
+            'path' => (route('domains.index'))
+        ]);
+
+        return view('domain.index', compact('domains'));
     }
 
     public function store(Request $request)

@@ -18,7 +18,7 @@ class DomainCheckController extends Controller
         session()->flash(
             'message',
             "Your request is being processed. 
-            If data is not selected, try refreshing the page late"
+            If data is not selected, try refreshing the page later"
         );
 
         return redirect()->route('domains.show', ['id' => $id]);
