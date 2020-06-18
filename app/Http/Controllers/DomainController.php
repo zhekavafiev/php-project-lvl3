@@ -9,8 +9,23 @@ use Illuminate\Support\Facades\DB;
 
 class DomainController extends Controller
 {
-    public function show($id)
+    public function show($id, Request $request)
     {
+        $page = empty($request['page']) ? 1 : $request['page'];
+        $countChecks = DB::select('select count(*) as count from domain_checks
+            where domain_id = ?', [$id])[0]->count;
+        $perPage = 5;
+
+        if (!is_numeric($page) || ceil($countChecks / $perPage) < $page) {
+            session()->flash(
+                'errors',
+                'You request is wrong'
+            );
+            $page = 1;
+        }
+
+        $offset = ($page - 1) * $perPage;
+
         $domain = DB::select('select domains.id, name, domains.created_at,
             max(domain_checks.created_at) as last_check, h1, keywords, description, status_code
             from domains left join domain_checks
@@ -22,9 +37,16 @@ class DomainController extends Controller
             return abort(404);
         }
 
-        $checks = DB::select('select id, created_at, updated_at, status_code, h1, keywords, description
+        $checksOnPage = DB::select('select id, created_at, updated_at, status_code, h1, keywords, description
             from domain_checks 
-            where domain_id = ?', [$id]);
+            where domain_id = ?
+            order by created_at desc
+            limit ?
+            offset ?', [$id, $perPage, $offset]);
+
+        $checks = new Paginator($checksOnPage, $countChecks, $perPage, $page, [
+            'path' => (route('domains.show', $id))
+        ]);
         
         return view('domain.show', compact('domain', 'checks'));
     }

@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section("content")
-@if(Session::has('error'))
-  <div class="alert alert-danger">  {{ Session::get('error') }}</div>
+@if(Session::has('errors'))
+  <div class="alert alert-danger">  {{ Session::get('errors') }}</div>
 @endif
 
 @if(Session::has('message'))
@@ -10,14 +10,9 @@
 @endif
 
 <link href="/../css/album.css" rel="stylesheet">
-<table class="table table-striped">
+<table class="table table-striped table-sm">
   <tbody>
     @foreach ($domain as $row)
-      <h1>Site: {{ $row->name }}</h1>
-      <tr>
-        <td>Id</td>
-        <td>{{ $row->id }}</td>
-      </tr>
       <tr>
         <td>Name</td>
         <td>{{ $row->name }}</td>
@@ -51,10 +46,11 @@
 </table>
 <form class="form-inline mt-2 mt-md-0" action="/domains/{{ $row->id }}/check" method="post">
     {{ csrf_field() }}
-    <input class="btn btn-primary btn-lg btn-block" type="submit" value="Run check">
-</form>
-<table class="table">
-  <thead>
+    <input class="btn btn-secondary btn-lg btn-block" type="submit" value="Run check">
+</form><br>
+{{ $checks->links() }}
+<table class="table table-sm">
+  <thead class="thead-dark">
     <tr>
       <th scope="col">id</th>
       <th scope="col">Create</th>
