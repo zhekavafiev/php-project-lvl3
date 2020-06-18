@@ -32,9 +32,4 @@ class DomainControllerTest extends TestCase
         $response = $this->get(route('domains.show', ['id' => $id]));
         $response->assertStatus(404);
     }
-
-    // public function testOtobrazhenienovogoDomena()
-    // {
-
-    // }
 }

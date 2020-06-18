@@ -16,7 +16,7 @@ class DomainController extends Controller
             where domain_id = ?', [$id])[0]->count;
         $perPage = 5;
 
-        if (!is_numeric($page) || ceil($countChecks / $perPage) < $page) {
+        if (!is_numeric($page) || ((ceil($countChecks / $perPage) < $page) && $countChecks != 0)) {
             session()->flash(
                 'errors',
                 'You request is wrong'
@@ -57,12 +57,12 @@ class DomainController extends Controller
         $countDomain = DB::select('select count(*) as count from domains')[0]->count;
         $perPage = 10;
 
-        if (!is_numeric($page) || ceil($countDomain / $perPage) < $page) {
+        if (!is_numeric($page) || ((ceil($countDomain / $perPage) < $page) && $countDomain != 0)) {
             session()->flash(
                 'errors',
                 'You request is wrong'
             );
-            $page = 1;
+            return redirect()->route('domains.index');
         }
 
         $offset = ($page - 1) * $perPage;
@@ -79,7 +79,6 @@ class DomainController extends Controller
         $domains = new Paginator($domainsOnPage, $countDomain, $perPage, $page, [
             'path' => (route('domains.index'))
         ]);
-
         return view('domain.index', compact('domains'));
     }
 
