@@ -19,11 +19,19 @@ class DomainControllerTest extends TestCase
     public function testDomainPageHasOnDB()
     {
         $domain = factory(Domain::class)->make();
-        $id = $domain->id;
         $domain->save();
-        $response = $this->get(route('domains.show', ['id' => $id]));
+        $response = $this->get(route('domains.show', $domain));
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
+    }
+
+    public function testIndexWrongPaginatePage()
+    {
+        $domain = factory(Domain::class)->make();
+        $domain->save();
+        $response = $this->get(route('domains.index', ['page' => 100]));
+        $response->assertStatus(302);
+        $response->assertSessionHas('errors');
     }
 
     public function testDomainPageNotHasOnDB()

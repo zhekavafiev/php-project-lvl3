@@ -17,11 +17,7 @@ class DomainController extends Controller
         $perPage = 5;
 
         if (!is_numeric($page) || ((ceil($countChecks / $perPage) < $page) && $countChecks != 0)) {
-            session()->flash(
-                'errors',
-                'You request is wrong'
-            );
-            $page = 1;
+            return back()->with('errors', 'You request is wrong');
         }
 
         $offset = ($page - 1) * $perPage;
@@ -58,11 +54,7 @@ class DomainController extends Controller
         $perPage = 10;
 
         if (!is_numeric($page) || ((ceil($countDomain / $perPage) < $page) && $countDomain != 0)) {
-            session()->flash(
-                'errors',
-                'You request is wrong'
-            );
-            return redirect()->route('domains.index');
+            return back()->with('errors', 'You request is wrong');
         }
 
         $offset = ($page - 1) * $perPage;
