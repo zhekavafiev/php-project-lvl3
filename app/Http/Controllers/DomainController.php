@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Domain;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class DomainController extends Controller
 {
     public function show($id, Request $request)
     {
         $page = empty($request['page']) ? 1 : $request['page'];
+        
         $countChecks = DB::select('select count(*) as count from domain_checks
             where domain_id = ?', [$id])[0]->count;
         $perPage = 5;
@@ -82,17 +83,19 @@ class DomainController extends Controller
 
         $parsedName = parse_url($request->input('name'));
         $name = "{$parsedName['scheme']}://{$parsedName['host']}";
-        $domain = new Domain();
+        // $domain = new Domain();
         try {
             $query = DB::select('Select id from domains where name = ?', [$name]);
             $id = $query[0]->id;
             session()->flash('message', "Domen {$name} has been checked early");
             return redirect()->route('domain', ['id' => $id]);
         } catch (\Exception $error) {
-            $domain->name = $name;
-            $domain->save();
-            session()->flash('message', "Domain {$domain->name} has added");
-            return redirect()->route('domains.show', $domain);
+            $date = Carbon::now();
+            DB::insert('insert into domains (name, created_at) values (?, ?)', [$name, $date]);
+            session()->flash('message', "Domain {$name} has added");
+            $query = DB::select('Select id from domains where name = ?', [$name]);
+            $id = $query[0]->id;
+            return redirect()->route('domains.show', $id);
         }
     }
 }
