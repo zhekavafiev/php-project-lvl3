@@ -83,7 +83,6 @@ class DomainController extends Controller
 
         $parsedName = parse_url($request->input('name'));
         $name = "{$parsedName['scheme']}://{$parsedName['host']}";
-        // $domain = new Domain();
         try {
             $query = DB::select('Select id from domains where name = ?', [$name]);
             $id = $query[0]->id;

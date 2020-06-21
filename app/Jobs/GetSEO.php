@@ -56,12 +56,14 @@ class GetSEO implements ShouldQueue
         }
 
         $lastcheck = $this->check->created_at;
+        
         DB::update(
             'update domains
             set updated_at = ?
             where id = ?',
             [$lastcheck, $this->check->domain_id]
         );
+        
         DB::update(
             'update domain_checks 
             set h1 = ?, keywords = ?, description = ?, status_code = ?
