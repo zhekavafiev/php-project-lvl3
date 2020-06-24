@@ -86,8 +86,8 @@ class DomainController extends Controller
         try {
             $query = DB::select('Select id from domains where name = ?', [$name]);
             $id = $query[0]->id;
-            session()->flash('message', "Domen {$name} has been checked early");
-            return redirect()->route('domain', ['id' => $id]);
+            session()->flash('errors', "Domen {$name} has been checked early");
+            return redirect()->route('domains.show', ['id' => $id]);
         } catch (\Exception $error) {
             $date = Carbon::now();
             DB::insert('insert into domains (name, created_at) values (?, ?)', [$name, $date]);
