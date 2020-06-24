@@ -23,12 +23,15 @@ class DomainController extends Controller
 
         $offset = ($page - 1) * $perPage;
 
-        $domain = DB::select('select domains.id, name, domains.created_at,
-            max(domain_checks.created_at) as last_check, h1, keywords, description, status_code
-            from domains left join domain_checks
-            on domains.id = domain_checks.domain_id
-            group by name
-            having domains.id = ?', [$id]);
+        $domain = DB::select('select domains.id, domains.name, domains.created_at, 
+        domain_checks.created_at as last_check, domain_checks.status_code, domain_checks.h1,
+        domain_checks.keywords, domain_checks.description
+        from domains left join domain_checks
+        on domains.id = domain_checks.domain_id
+            and domain_checks.created_at = (SELECT MAX(created_at) FROM domain_checks WHERE domain_id = domains.id)
+        where domains.id = ?', [$id]);
+        // dd($domain);
+
         
         if (empty($domain)) {
             return abort(404);
@@ -61,11 +64,11 @@ class DomainController extends Controller
         $offset = ($page - 1) * $perPage;
 
         $domainsOnPage = DB::select('select domains.id, domains.name, domains.created_at, 
-            max(domain_checks.created_at) as last_check, domain_checks.status_code
+            domain_checks.created_at as last_check, domain_checks.status_code
             from domains left join domain_checks
             on domains.id = domain_checks.domain_id
-            group by name
-            order by domains.id
+                and domain_checks.created_at = (SELECT MAX(created_at) FROM domain_checks WHERE domain_id = domains.id)
+                order by domains.id desc
             limit ?
             offset ?', [$perPage, $offset]);
 
