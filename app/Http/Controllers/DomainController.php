@@ -30,8 +30,6 @@ class DomainController extends Controller
         on domains.id = domain_checks.domain_id
             and domain_checks.created_at = (SELECT MAX(created_at) FROM domain_checks WHERE domain_id = domains.id)
         where domains.id = ?', [$id]);
-        // dd($domain);
-
         
         if (empty($domain)) {
             return abort(404);
