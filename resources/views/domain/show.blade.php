@@ -9,7 +9,6 @@
   <div class="alert alert-success">  {{ Session::get('message') }}</div>
 @endif
 
-<link href="/../css/album.css" rel="stylesheet">
 <table class="table table-striped table-sm">
   <tbody>
     @foreach ($domain as $row)

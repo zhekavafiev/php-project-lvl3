@@ -6,6 +6,7 @@ use App\Domain;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class DomainControllerTest extends TestCase
 {
@@ -50,4 +51,16 @@ class DomainControllerTest extends TestCase
         $response->assertSeeInOrder([$domain->index, $data['name'], $domain->created_at]);
         $response->assertStatus(200);
     }
+
+    // public function testIndexPagination()
+    // {
+    //     $domains = factory(Domain::class, 11)->make();
+    //     foreach ($domains as $domain) {
+    //         $parsedName = parse_url($domain['name']);
+    //         $domain->attributes['name'] = "{$parsedName['scheme']}://{$parsedName['host']}";
+    //         $domain->save();
+    //     }
+        
+    //     dd(DB::select('select * drom domains'));
+    // }
 }
