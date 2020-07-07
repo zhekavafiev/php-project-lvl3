@@ -3,9 +3,8 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Domain;
+use Faker\Factory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Support\Arr;
 
 class MainPageTest extends TestCase
 {
@@ -19,8 +18,8 @@ class MainPageTest extends TestCase
 
     public function testMainPageAction()
     {
-        $domain = factory(Domain::class)->make();
-        $data = Arr::only($domain->toArray(), ['name']);
+        $faker = Factory::create();
+        $data['name'] = $faker->url;
         $parsedName = parse_url($data['name']);
         $data['name'] = "{$parsedName['scheme']}://{$parsedName['host']}";
         $response = $this->post(route('domains.store'), $data);

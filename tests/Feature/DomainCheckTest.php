@@ -3,11 +3,8 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Faker\Generator\Factory as Faker;
 use Faker\Factory;
-use App\Domain;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class DomainCheckTest extends TestCase
@@ -16,8 +13,8 @@ class DomainCheckTest extends TestCase
 
     public function testAddCheck()
     {
-        // $domain = factory(Domain::class)->make();
         $faker = Factory::create();
+        
         $domain = [
             'name' => $faker->url,
             'id' => 1
@@ -25,8 +22,6 @@ class DomainCheckTest extends TestCase
         $parsedName = parse_url($domain['name']);
         $domain['name'] = "{$parsedName['scheme']}://{$parsedName['host']}";
         $this->post(route('domains.store', $domain));
-        // dd(DB::select('select * from domains'));
-        // $domain->save();
         
         $statusCode = rand(300, 500);
         $h1 = 'h1';
