@@ -6,6 +6,8 @@ use App\Domain;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Arr;
+use Faker\Factor;
+use Faker\Factory;
 use Illuminate\Support\Facades\DB;
 
 class DomainControllerTest extends TestCase
@@ -14,18 +16,24 @@ class DomainControllerTest extends TestCase
 
     public function testDomainShow()
     {
-        $domain = factory(Domain::class)->make();
-        $domain->save();
-        $response = $this->get(route('domains.show', $domain));
-        $response->assertSeeInOrder([$domain->name, $domain->created_at]);
+        $domain['name'] = Factory::create()->url;
+        $domain['id'] = 1;
+        $parsedName = parse_url($domain['name']);
+        $domain['name'] = "{$parsedName['scheme']}://{$parsedName['host']}";
+        $this->post(route('domains.store', $domain));
+
+        $response = $this->get(route('domains.show', $domain['id']));
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
     }
 
     public function testIndexWrongPaginatePage()
     {
-        $domain = factory(Domain::class)->make();
-        $domain->save();
+        $domain['name'] = Factory::create()->url;
+        $parsedName = parse_url($domain['name']);
+        $domain['name'] = "{$parsedName['scheme']}://{$parsedName['host']}";
+        $this->post(route('domains.store', $domain));
+        
         $wrongPage = rand(2, 100);
         $response = $this->get(route('domains.index', ['page' => $wrongPage]));
         $response->assertStatus(302);
@@ -39,28 +47,9 @@ class DomainControllerTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function testIndexContent()
+    public function testIndexPage()
     {
-        $domain = factory(Domain::class)->make();
-        $data = Arr::only($domain->toArray(), ['name']);
-        $parsedName = parse_url($data['name']);
-        $data['name'] = "{$parsedName['scheme']}://{$parsedName['host']}";
-        $this->post(route('domains.store'), $data);
-
         $response = $this->get(route('domains.index'));
-        $response->assertSeeInOrder([$domain->index, $data['name'], $domain->created_at]);
         $response->assertStatus(200);
     }
-
-    // public function testIndexPagination()
-    // {
-    //     $domains = factory(Domain::class, 11)->make();
-    //     foreach ($domains as $domain) {
-    //         $parsedName = parse_url($domain['name']);
-    //         $domain->attributes['name'] = "{$parsedName['scheme']}://{$parsedName['host']}";
-    //         $domain->save();
-    //     }
-        
-    //     dd(DB::select('select * drom domains'));
-    // }
 }
