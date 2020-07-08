@@ -2,12 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Domain;
-use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Support\Arr;
-use Faker\Factor;
 use Faker\Factory;
 use Illuminate\Support\Facades\DB;
 
