@@ -11,13 +11,19 @@ class DomainCheckController extends Controller
     public function check($id)
     {
         $date = Carbon::now();
-        DB::insert('insert into domain_checks (domain_id, created_at) values (?, ?)', [$id, $date]);
-        $check = DB::select(
-            'select * from domain_checks 
-            order by id desc
-            limit 1'
-        );
-        
+        DB::table('domain_checks')
+            ->insert([
+                'domain_id' => $id,
+                'created_at' => $date
+            ]);
+            
+        $check = DB::table('domain_checks')
+            ->select('*')
+            ->where('domain_id', $id)
+            ->orderByDesc('id')
+            ->limit(1)
+            ->get();
+
         GetSEO::dispatchAfterResponse($check[0]);
 
         session()->flash(
