@@ -16,7 +16,10 @@ class DomainCheckController extends Controller
                 'domain_id' => $id,
                 'created_at' => $date
             ]);
-            
+        
+        //Слабоеместо, не уверен, что вытащит именно нужную запись
+        //если допустим отправить сразу 100 запросов на check
+
         $check = DB::table('domain_checks')
             ->select('*')
             ->where('domain_id', $id)

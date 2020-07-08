@@ -37,9 +37,10 @@ class GetSEO implements ShouldQueue
      */
     public function handle()
     {
-        $query = DB::select('select name from domains where id = ?', [$this->check->domain_id]);
-        $domenName = $query[0]->name;
-        
+        $domenName = DB::table('domains')
+            ->select('name')
+            ->where('id', $this->check->domain_id)
+            ->get()->toArray()[0]->name;
         try {
             $response = Http::get($domenName);
             $status = $response->status();
@@ -57,24 +58,17 @@ class GetSEO implements ShouldQueue
 
         $lastcheck = $this->check->created_at;
         
-        DB::update(
-            'update domains
-            set updated_at = ?
-            where id = ?',
-            [$lastcheck, $this->check->domain_id]
-        );
+        DB::table('domains')
+            ->where('id', $this->check->domain_id)
+            ->update(['updated_at' => $lastcheck]);
         
-        DB::update(
-            'update domain_checks 
-            set h1 = ?, keywords = ?, description = ?, status_code = ?
-            where id = ?',
-            [
-                $headlineH1,
-                $keywords,
-                $description,
-                $status,
-                $this->check->id
-            ]
-        );
+        DB::table('domain_checks')
+            ->where('id', $this->check->id)
+            ->update([
+                'h1' => $headlineH1,
+                'keywords' => $keywords,
+                'description' => $description,
+                'status_code' => $status
+            ]);
     }
 }
