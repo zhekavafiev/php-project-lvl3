@@ -13,7 +13,7 @@
   </div>
 @endif
 <h1 class="mt-5">Page analizator</h1>
-<form class="form-inline mt-2 mt-md-0" action="/" method="post">
+<form class="form-inline mt-2 mt-md-0" action="{{route('index')}}" method="post">
   {{ csrf_field() }}
   <input class="form-control mr-sm-2" type="text" placeholder="http://example.com" name="name" >
   <button class="btn btn-outline-dark my-2 my-lg-0" type="submit">Check</button>

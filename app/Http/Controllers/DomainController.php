@@ -70,6 +70,23 @@ class DomainController extends Controller
             limit ?
             offset ?', [$perPage, $offset]);
 
+        // $domainsOnPage = DB::table('domain_checks')
+        //     ->select('domains.name', DB::raw('max(domain_checks.created_at) as last_check'))
+        //     ->join('domains', 'domains.id', '=', 'domain_checks.domain_id')
+        //     ->groupBy('domains.name')
+        //     ->get()->toArray();
+
+        // $domainsOnPage = DB::table('domain_checks')
+        //     ->select('domains.name', DB::raw('max(domain_checks.created_at) as last_check'))
+        //     ->join('domains', function ($join) {
+        //         $join->on('domains.id', '=', 'domain_checks.domain_id');
+        //     })
+        //     ->groupBy('domains.name')
+        //     ->get()->toArray();
+
+
+        // dd($domainsOnPage);
+
         $domains = new Paginator($domainsOnPage, $countDomain, $perPage, $page, [
             'path' => (route('domains.index'))
         ]);

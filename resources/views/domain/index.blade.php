@@ -23,7 +23,7 @@
     @foreach ($domains as $domain)
       <tr>
         <th scope="row"> {{ $domain->id }} </th>
-        <td><a href="/domains/{{ $domain->id }}">{{ $domain->name }}</a></td>
+        <td><a href="{{route('domains.show', $domain->id)}}">{{ $domain->name }}</a></td>
         <td>{{ $domain->created_at }}</td>
         <td>{{ $domain->last_check }}</td>
         <td>{{ $domain->status_code }}</td>

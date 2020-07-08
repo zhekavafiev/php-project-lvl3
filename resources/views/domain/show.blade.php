@@ -43,7 +43,7 @@
     @endforeach
   </tbody>
 </table>
-<form class="form-inline mt-2 mt-md-0" action="/domains/{{ $row->id }}/check" method="post">
+<form class="form-inline mt-2 mt-md-0" action="{{route('check', $row->id)}}" method="post">
     {{ csrf_field() }}
     <input class="btn btn-secondary btn-lg btn-block" type="submit" value="Run check">
 </form><br>
