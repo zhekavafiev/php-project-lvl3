@@ -12,10 +12,10 @@ class DomainController extends Controller
     public function show($id, Request $request)
     {
         $page = empty($request['page']) ? 1 : $request['page'];
-        
-        $countChecks = DB::select('select count(*) as count from domain_checks
-            where domain_id = ?', [$id])[0]->count;
         $perPage = 5;
+        $countChecks = DB::table('domain_checks')
+            ->where('domain_id', $id)
+            ->count();
 
         if (!is_numeric($page) || ((ceil($countChecks / $perPage) < $page) && $countChecks != 0)) {
             return back()->with('errors', 'You request is wrong');
@@ -35,12 +35,13 @@ class DomainController extends Controller
             return abort(404);
         }
 
-        $checksOnPage = DB::select('select id, created_at, updated_at, status_code, h1, keywords, description
-            from domain_checks 
-            where domain_id = ?
-            order by created_at desc
-            limit ?
-            offset ?', [$id, $perPage, $offset]);
+        $checksOnPage = DB::table('domain_checks')
+            ->select('id', 'created_at', 'updated_at', 'status_code', 'h1', 'keywords', 'description')
+            ->where('domain_id', $id)
+            ->orderByDesc('created_at')
+            ->limit($perPage)
+            ->offset($offset)
+            ->get();
 
         $checks = new Paginator($checksOnPage, $countChecks, $perPage, $page, [
             'path' => (route('domains.show', $id))
@@ -52,7 +53,10 @@ class DomainController extends Controller
     public function index(Request $request)
     {
         $page = empty($request['page']) ? 1 : $request['page'];
-        $countDomain = DB::select('select count(*) as count from domains')[0]->count;
+
+        $countDomain = DB::table('domains')
+            ->count();
+
         $perPage = 10;
 
         if (!is_numeric($page) || ((ceil($countDomain / $perPage) < $page) && $countDomain != 0)) {
