@@ -23,34 +23,23 @@ class DomainController extends Controller
 
         $offset = ($page - 1) * $perPage;
 
-        $domain = DB::table('domains')
-            ->select(
-                'domains.id',
-                'domains.created_at',
-                'domains.name',
-                'domain_checks.h1',
-                'domain_checks.keywords',
-                'domain_checks.description',
-                'status_code',
-                DB::raw('max(domain_checks.created_at) as last_check')
-            )
-            ->leftJoin('domain_checks', 'domains.id', '=', 'domain_checks.domain_id')
-            ->groupBy(
-                'domains.id',
-                'domains.created_at',
-                'domain_checks.h1',
-                'domain_checks.keywords',
-                'domain_checks.description',
-                'status_code'
-            )
-            ->distinct('domains.id')
-            ->orderByDesc('domains.id')
-            ->where('domains.id', $id)
-            ->get()[0] ?? null;
-            
+        $domain = DB::table('domains')->find($id) ?? null;
+
         if (empty($domain)) {
             return abort(404);
         }
+            
+        $lastCheck = DB::table('domain_checks')
+            ->where('domain_id', $id)
+            ->orderByDesc('created_at')
+            ->limit(1)
+            ->get()[0] ?? null;
+
+        $domain->status_code = $lastCheck->status_code ?? '';
+        $domain->h1 = $lastCheck->h1 ?? '';
+        $domain->keywords = $lastCheck->keywords ?? '';
+        $domain->description = $lastCheck->description ?? '';
+        $domain->last_check = $lastCheck->created_at ?? '';
 
         $checksOnPage = DB::table('domain_checks')
             ->select('id', 'created_at', 'updated_at', 'status_code', 'h1', 'keywords', 'description')
@@ -81,27 +70,37 @@ class DomainController extends Controller
         }
 
         $offset = ($page - 1) * $perPage;
-
+        
         $domainsOnPage = DB::table('domains')
-            ->select(
-                'domains.id',
-                'domains.created_at',
-                'domains.name',
-                'status_code',
-                DB::raw('max(domain_checks.created_at) as last_check')
-            )
-            ->leftJoin('domain_checks', 'domains.id', '=', 'domain_checks.domain_id')
-            ->groupBy('domains.id', 'status_code', 'domains.created_at')
-            ->distinct('domains.id')
-            ->orderByDesc('domains.id')
+            ->orderByDesc('id')
             ->limit($perPage)
             ->offset($offset)
-            ->get()->toArray();
+            ->get();
+        
+        $lastChecks = DB::table('domain_checks')
+            ->select('domain_id', 'created_at', 'status_code')
+            ->whereIn('domain_id', $domainsOnPage->pluck('id'))
+            ->orderByDesc('domain_id')
+            ->orderByDesc('created_at')
+            ->distinct('domain_id')
+            ->get();
 
+        // dd($lastChecks, isset($lastChecks));
+        
+        if (!isset($lastChecks)) {
+            foreach ($lastChecks as $lastCheck) {
+                $checks[$lastCheck->domain_id] = $lastCheck;
+            }
+        } else {
+            $checks = null;
+        }
+
+        // dd($checks);
         $domains = new Paginator($domainsOnPage, $countDomain, $perPage, $page, [
             'path' => (route('domains.index'))
         ]);
-        return view('domain.index', compact('domains'));
+
+        return view('domain.index', compact('domains', 'checks'));
     }
 
     public function store(Request $request)
@@ -113,7 +112,11 @@ class DomainController extends Controller
         $parsedName = parse_url($request->input('name'));
         $name = "{$parsedName['scheme']}://{$parsedName['host']}";
         try {
-            $query = DB::select('Select id from domains where name = ?', [$name]);
+            $query = DB::table('domains')
+                ->select('id')
+                ->where('name', $name)
+                ->get();
+            // $query = DB::select('Select id from domains where name = ?', [$name]);
             $id = $query[0]->id;
             session()->flash('errors', "Domen {$name} has been checked early");
             return redirect()->route('domains.show', ['id' => $id]);
