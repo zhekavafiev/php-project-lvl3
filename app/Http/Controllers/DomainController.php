@@ -23,7 +23,7 @@ class DomainController extends Controller
 
         $offset = ($page - 1) * $perPage;
 
-        $domain = DB::table('domains')
+        $query = DB::table('domains')
             ->select(
                 'domains.id',
                 'domains.created_at',
@@ -46,12 +46,13 @@ class DomainController extends Controller
             ->distinct('domains.id')
             ->orderByDesc('domains.id')
             ->where('domains.id', $id)
-            ->get()[0] ?? null;
-            
-        if (empty($domain)) {
+            ->get()->toArray();
+
+        if (empty($query)) {
             return abort(404);
         }
-
+        $domain = $query[0];
+        
         $checksOnPage = DB::table('domain_checks')
             ->select('id', 'created_at', 'updated_at', 'status_code', 'h1', 'keywords', 'description')
             ->where('domain_id', $id)
