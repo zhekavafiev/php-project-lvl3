@@ -83,19 +83,13 @@ class DomainController extends Controller
             ->orderByDesc('domain_id')
             ->orderByDesc('created_at')
             ->distinct('domain_id')
-            ->get();
-
-        // dd($lastChecks, isset($lastChecks));
+            ->get()->toArray();
         
-        if (!isset($lastChecks)) {
-            foreach ($lastChecks as $lastCheck) {
-                $checks[$lastCheck->domain_id] = $lastCheck;
-            }
-        } else {
-            $checks = null;
+        $checks = [];
+        foreach ($lastChecks as $lastCheck) {
+            $checks[$lastCheck->domain_id] = $lastCheck;
         }
 
-        // dd($checks);
         $domains = new Paginator($domainsOnPage, $countDomain, $perPage, $page, [
             'path' => (route('domains.index'))
         ]);
@@ -116,7 +110,6 @@ class DomainController extends Controller
                 ->select('id')
                 ->where('name', $name)
                 ->get();
-            // $query = DB::select('Select id from domains where name = ?', [$name]);
             $id = $query[0]->id;
             session()->flash('errors', "Domen {$name} has been checked early");
             return redirect()->route('domains.show', ['id' => $id]);
