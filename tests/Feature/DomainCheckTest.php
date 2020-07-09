@@ -21,6 +21,7 @@ class DomainCheckTest extends TestCase
         $parsedName = parse_url($name);
         $name = "{$parsedName['scheme']}://{$parsedName['host']}";
         DB::insert('insert into domains (name) values (?)', [$name]);
+        
         $this->domainForTest =  DB::table('domains')
             ->select('*')
             ->limit(1)
