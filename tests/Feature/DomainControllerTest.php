@@ -11,15 +11,13 @@ class DomainControllerTest extends TestCase
 {
     use DatabaseMigrations;
 
+    protected $id;
+
     protected function setUp(): void
     {
         parent::setUp();
-        for ($i = 0; $i < 3; $i++) {
-            $name = Factory::create()->url;
-            $parsedName = parse_url($name);
-            $name = "{$parsedName['scheme']}://{$parsedName['host']}";
-            DB::insert('insert into domains (name) values (?)', [$name]);
-        }
+        $domain['name'] = 'http://example.com';
+        $this->id = DB::table('domains')->insertGetId($domain);
     }
 
     public function testDomainStore()
@@ -36,12 +34,7 @@ class DomainControllerTest extends TestCase
 
     public function testDomainShow()
     {
-        $domain = DB::table('domains')
-            ->select('*')
-            ->limit(1)
-            ->get()->toArray()[0];
-
-        $response = $this->get(route('domains.show', $domain->id));
+        $response = $this->get(route('domains.show', ['id' => $this->id]));
         $response->assertStatus(200);
         $response->assertSessionHasNoErrors();
     }
@@ -56,7 +49,7 @@ class DomainControllerTest extends TestCase
 
     public function testDomainPageNotHasOnDB()
     {
-        $count = DB::table('domains')->count();
+        $count = DB::table('domains')->max('id');
         $id = rand($count + 1, 100);
         $response = $this->get(route('domains.show', ['id' => $id]));
         $response->assertStatus(404);
