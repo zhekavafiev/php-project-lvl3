@@ -11,39 +11,37 @@
 
 <table class="table table-striped table-sm">
   <tbody>
-    @foreach ($domain as $row)
       <tr>
         <td>Name</td>
-        <td>{{ $row->name }}</td>
+        <td>{{ $domain->name }}</td>
       </tr>
       <tr>
         <td>Creat</td>
-        <td>{{ $row->created_at }}</td>
+        <td>{{ $domain->created_at }}</td>
       </tr>
       <tr>
         <td>Update</td>
-        <td>{{ $row->last_check }}</td>
+        <td>{{ $domain->last_check }}</td>
       </tr>
       <tr>
         <td>Last status</td>
-        <td>{{ $row->status_code }}</td>
+        <td>{{ $domain->status_code }}</td>
       </tr>
       <tr>
         <td>Last h1</td>
-        <td>{{ $row->h1 }}</td>
+        <td>{{ $domain->h1 }}</td>
       </tr>
       <tr>
         <td>Last Keywords</td>
-        <td>{{ $row->keywords }}</td>
+        <td>{{ $domain->keywords }}</td>
       </tr>
       <tr>
         <td>Last Description</td>
-        <td>{{ $row->description }}</td>
+        <td>{{ $domain->description }}</td>
       </tr>
-    @endforeach
   </tbody>
 </table>
-<form class="form-inline mt-2 mt-md-0" action="{{route('check', $row->id)}}" method="post">
+<form class="form-inline mt-2 mt-md-0" action="{{route('check', $domain->id)}}" method="post">
     {{ csrf_field() }}
     <input class="btn btn-secondary btn-lg btn-block" type="submit" value="Run check">
 </form><br>

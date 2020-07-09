@@ -23,38 +23,31 @@ class DomainController extends Controller
 
         $offset = ($page - 1) * $perPage;
 
-        $domain = DB::select('select domains.id, domains.name, domains.created_at, 
-        domain_checks.created_at as last_check, domain_checks.status_code, domain_checks.h1,
-        domain_checks.keywords, domain_checks.description
-        from domains left join domain_checks
-        on domains.id = domain_checks.domain_id
-            and domain_checks.created_at = (SELECT MAX(created_at) FROM domain_checks WHERE domain_id = domains.id)
-        where domains.id = ?', [$id]);
-        
-        // $domain = DB::table('domains')
-        //     ->select(
-        //         'domains.id',
-        //         'domains.created_at',
-        //         'domains.name',
-        //         'domain_checks.h1',
-        //         'domain_checks.keywords',
-        //         'domain_checks.description',
-        //         'status_code',
-        //         DB::raw('max(domain_checks.created_at) as last_check')
-        //     )
-        //     ->leftJoin('domain_checks', 'domains.id', '=', 'domain_checks.domain_id')
-        //     ->groupBy(
-        //         'domains.id',
-        //         'domains.created_at',
-        //         'domain_checks.h1',
-        //         'domain_checks.keywords',
-        //         'domain_checks.description',
-        //         'status_code'
-        //     )
-        //     ->orderByDesc('domains.id')
-        //     ->where('domains.id', $id)
-        //     ->get()->toArray()[0];
-
+        $domain = DB::table('domains')
+            ->select(
+                'domains.id',
+                'domains.created_at',
+                'domains.name',
+                'domain_checks.h1',
+                'domain_checks.keywords',
+                'domain_checks.description',
+                'status_code',
+                DB::raw('max(domain_checks.created_at) as last_check')
+            )
+            ->leftJoin('domain_checks', 'domains.id', '=', 'domain_checks.domain_id')
+            ->groupBy(
+                'domains.id',
+                'domains.created_at',
+                'domain_checks.h1',
+                'domain_checks.keywords',
+                'domain_checks.description',
+                'status_code'
+            )
+            ->distinct('domains.id')
+            ->orderByDesc('domains.id')
+            ->where('domains.id', $id)
+            ->get()[0] ?? null;
+            
         if (empty($domain)) {
             return abort(404);
         }
@@ -89,26 +82,6 @@ class DomainController extends Controller
 
         $offset = ($page - 1) * $perPage;
 
-        // <-- worked version
-
-        // $domainsOnPage = DB::select('select domains.id, domains.name, domains.created_at, 
-        //     domain_checks.created_at as last_check, domain_checks.status_code
-        //     from domains left join domain_checks
-        //     on domains.id = domain_checks.domain_id
-        //         and domain_checks.created_at = (SELECT MAX(created_at) FROM domain_checks WHERE domain_id = domains.id)
-        //         order by domains.id desc
-        //     limit ?
-        //     offset ?', [$perPage, $offset]);
-
-        // <-- sansei version with distinkt
-        // ь проблемы, я не уверен, что нужную поселднюю запись сохранит при 
-
-        // $domainsOnPage = DB::table('domain_checks')
-        //     ->orderByDesc('domain_id')
-        //     ->orderByDesc('created_at')
-        //     ->get()
-        //     ->keyBy('domain_id');
-
         $domainsOnPage = DB::table('domains')
             ->select(
                 'domains.id',
@@ -125,17 +98,6 @@ class DomainController extends Controller
             ->offset($offset)
             ->get()->toArray();
 
-
-        // $domainsOnPage = DB::table('domain_checks')
-        //     ->select(
-        //         'domain_id',
-        //         'status_code',
-        //         DB::raw('max(domain_checks.created_at) as last_check')
-        //     )
-        //     ->groupBy('domain_id', 'status_code')
-        //     ->distinct('domain_id')
-        //     ->get()->toArray();
-            dd($domainsOnPage);
         $domains = new Paginator($domainsOnPage, $countDomain, $perPage, $page, [
             'path' => (route('domains.index'))
         ]);
