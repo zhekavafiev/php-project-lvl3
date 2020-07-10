@@ -24,7 +24,7 @@ class DomainCheckTest extends TestCase
 
     public function testAddCheck()
     {
-        $html = file_get_contents(realpath(__DIR__ . '/../fixtureses/fake.html'));
+        $html = file_get_contents(realpath(__DIR__ . '/../fixtures/fake.html'));
         
         Http::fake([
             $this->name => Http::response($html, 200)
