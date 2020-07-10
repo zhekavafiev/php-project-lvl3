@@ -12,47 +12,34 @@ class DomainCheckTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private $domainForTest;
+    private $name;
+    private $id;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $name = Factory::create()->url;
-        $parsedName = parse_url($name);
-        $name = "{$parsedName['scheme']}://{$parsedName['host']}";
-        DB::insert('insert into domains (name) values (?)', [$name]);
-        
-        $this->domainForTest =  DB::table('domains')
-            ->select('*')
-            ->limit(1)
-            ->get()->toArray()[0];
+        $domain['name'] = 'http://example.com';
+        $this->name = $domain['name'];
+        $this->id = DB::table('domains')->insert($domain);
     }
 
     public function testAddCheck()
     {
-        $statusCode = rand(300, 500);
-        $h1 = 'h1';
-        $keywords = 'keywords';
-        $description = 'description';
+        $html = file_get_contents(realpath(__DIR__ . '/../fixtureses/fake.html'));
         
         Http::fake([
-            $this->domainForTest->name => Http::response(
-                "<h1>{$h1}</h1>" .
-                "<meta name=\"keywords\" content=\"{$keywords}\">" .
-                "<meta name=\"description\" content=\"{$description}\">",
-                $statusCode
-            )
+            $this->name => Http::response($html, 200)
         ]);
 
-        $response = $this->post(route('check', ['id' => $this->domainForTest->id]));
+        $response = $this->post(route('check', ['id' => $this->id]));
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $this->assertDatabaseHas('domain_checks', [
-            'domain_id' => $this->domainForTest->id,
-            'status_code' => $statusCode,
-            'keywords' => $keywords,
-            'h1' => $h1,
-            'description' => $description,
+            'domain_id' => $this->id,
+            'status_code' => 200,
+            'keywords' => 'keywordsTest',
+            'h1' => 'h1Test',
+            'description' => 'descriptionTest',
             ]);
     }
 }

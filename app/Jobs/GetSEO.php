@@ -49,7 +49,7 @@ class GetSEO implements ShouldQueue
             $headlineH1 = $seo->getHeadline('h1');
             $keywords = $seo->getMetaContent('keywords');
             $description = $seo->getMetaContent('description');
-        } catch (\Exception $e) { // ловит несуществующие вдреса
+        } catch (\Exception $e) {
             $status = 500;
             $headlineH1 = '';
             $keywords = '';

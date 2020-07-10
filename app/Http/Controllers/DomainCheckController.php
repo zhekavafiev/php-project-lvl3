@@ -20,9 +20,9 @@ class DomainCheckController extends Controller
         $check = DB::table('domain_checks')
             ->select('*')
             ->where('id', $checkId)
-            ->get();
+            ->get()->first();
 
-        GetSEO::dispatchAfterResponse($check[0]);
+        GetSEO::dispatchAfterResponse($check);
 
         session()->flash(
             'message',
