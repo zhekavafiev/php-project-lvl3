@@ -29,16 +29,18 @@ class DomainCheckTest extends TestCase
         Http::fake([
             $this->name => Http::response($html, 200)
         ]);
-
-        $response = $this->post(route('check', ['id' => $this->id]));
-        $response->assertStatus(302);
-        $response->assertSessionHasNoErrors();
-        $this->assertDatabaseHas('domain_checks', [
+        
+        $expected = [
             'domain_id' => $this->id,
             'status_code' => 200,
             'keywords' => 'keywordsTest',
             'h1' => 'h1Test',
             'description' => 'descriptionTest',
-            ]);
+        ];
+
+        $response = $this->post(route('check', ['id' => $this->id]));
+        $response->assertStatus(302);
+        $response->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('domain_checks', $expected);
     }
 }
