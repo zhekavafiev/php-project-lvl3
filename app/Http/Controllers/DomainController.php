@@ -23,7 +23,7 @@ class DomainController extends Controller
 
         $offset = ($page - 1) * $perPage;
 
-        $query = DB::table('domains')
+        $domain = DB::table('domains')
             ->select(
                 'domains.id',
                 'domains.created_at',
@@ -46,13 +46,12 @@ class DomainController extends Controller
             ->distinct('domains.id')
             ->orderByDesc('domains.id')
             ->where('domains.id', $id)
-            ->get()->toArray();
+            ->get()->first();
 
-        if (empty($query)) {
+        if (empty($domain)) {
             return abort(404);
         }
-        $domain = $query[0];
-        
+
         $checksOnPage = DB::table('domain_checks')
             ->select('id', 'created_at', 'updated_at', 'status_code', 'h1', 'keywords', 'description')
             ->where('domain_id', $id)
@@ -97,7 +96,7 @@ class DomainController extends Controller
             ->orderByDesc('domains.id')
             ->limit($perPage)
             ->offset($offset)
-            ->get()->toArray();
+            ->get();
 
         $domains = new Paginator($domainsOnPage, $countDomain, $perPage, $page, [
             'path' => (route('domains.index'))
@@ -114,17 +113,23 @@ class DomainController extends Controller
         $parsedName = parse_url($request->input('name'));
         $name = "{$parsedName['scheme']}://{$parsedName['host']}";
         try {
-            $query = DB::select('Select id from domains where name = ?', [$name]);
-            $id = $query[0]->id;
+            $id = DB::table('domains')
+                ->select('id')
+                ->where('name', $name)
+                ->get()->first()->id;
             session()->flash('errors', "Domen {$name} has been checked early");
             return redirect()->route('domains.show', ['id' => $id]);
         } catch (\Exception $error) {
             $date = Carbon::now();
-            DB::insert('insert into domains (name, created_at) values (?, ?)', [$name, $date]);
+            $id = DB::table('domains')
+                ->insertGetId(
+                    [
+                        'name' => $name,
+                        'created_at' => $date
+                    ]
+                );
             session()->flash('message', "Domain {$name} has added");
-            $query = DB::select('Select id from domains where name = ?', [$name]);
-            $id = $query[0]->id;
-            return redirect()->route('domains.show', $id);
+            return redirect()->route('domains.show', ['id' => $id]);
         }
     }
 }
