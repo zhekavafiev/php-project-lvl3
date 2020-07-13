@@ -7,20 +7,21 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Http;
 use Src\Seo\SeoHelper as SeoHelper;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GetSEO implements ShouldQueue
 {
     use Dispatchable;
 
-    private $check;
+    private $checkId;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($check)
+    public function __construct($checkId)
     {
-        $this->check = $check;
+        $this->checkId = $checkId;
     }
 
     /**
@@ -31,9 +32,18 @@ class GetSEO implements ShouldQueue
     public function handle()
     {
         $domain = DB::table('domains')
-            ->where('id', $this->check->domain_id)
+            ->join('domain_checks', 'domain_checks.domain_id', '=', 'domains.id')
+            ->select(
+                'domains.id as id',
+                'name',
+                'domain_checks.created_at as last_check'
+            )
+            ->where('domain_checks.id', $this->checkId)
             ->get()->first();
+
         $domenName = $domain->name;
+        $lastCheck = $domain->last_check;
+        
         try {
             $response = Http::get($domenName);
             $status = $response->status();
@@ -48,15 +58,13 @@ class GetSEO implements ShouldQueue
             $keywords = '';
             $description = '';
         }
-
-        $lastcheck = $this->check->created_at;
         
         DB::table('domains')
-            ->where('id', $this->check->domain_id)
-            ->update(['updated_at' => $lastcheck]);
+            ->where('id', $domain->id)
+            ->update(['updated_at' => $lastCheck]);
         
         DB::table('domain_checks')
-            ->where('id', $this->check->id)
+            ->where('id', $this->checkId)
             ->update([
                 'h1' => $headlineH1,
                 'keywords' => $keywords,
