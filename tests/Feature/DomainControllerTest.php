@@ -3,14 +3,11 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Faker\Factory;
 use Illuminate\Support\Facades\DB;
 
 class DomainControllerTest extends TestCase
 {
-    use DatabaseMigrations;
-
     protected $id;
 
     protected function setUp(): void
@@ -39,25 +36,11 @@ class DomainControllerTest extends TestCase
         $response->assertSessionHasNoErrors();
     }
 
-    public function testIndexWrongPaginatePage()
-    {
-        $wrongPage = rand(2, 100);
-        $response = $this->get(route('domains.index', ['page' => $wrongPage]));
-        $response->assertStatus(302);
-        $response->assertSessionHas('errors');
-    }
-
     public function testDomainPageNotHasOnDB()
     {
         $count = DB::table('domains')->max('id');
         $id = rand($count + 1, 100);
         $response = $this->get(route('domains.show', ['id' => $id]));
         $response->assertStatus(404);
-    }
-
-    public function testIndexPage()
-    {
-        $response = $this->get(route('domains.index'));
-        $response->assertStatus(200);
     }
 }

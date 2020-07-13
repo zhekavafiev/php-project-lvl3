@@ -2,13 +2,15 @@
 
 namespace Src\Seo;
 
+use DiDom\Document;
+
 class SeoHelper
 {
     private $html;
 
     public function __construct($html)
     {
-        $this->html = $html;
+        $this->html = new Document($html);
     }
 
     /**

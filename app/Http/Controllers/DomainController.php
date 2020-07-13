@@ -17,9 +17,9 @@ class DomainController extends Controller
             ->where('domain_id', $id)
             ->count();
 
-        if (!is_numeric($page) || ((ceil($countChecks / $perPage) < $page) && $countChecks != 0)) {
-            return back()->with('errors', 'You request is wrong');
-        }
+        // if (!is_numeric($page) || ((ceil($countChecks / $perPage) < $page) && $countChecks != 0)) {
+        //     return back()->with('errors', 'You request is wrong');
+        // }
 
         $offset = ($page - 1) * $perPage;
 
@@ -33,7 +33,7 @@ class DomainController extends Controller
             ->where('domain_id', $id)
             ->orderByDesc('created_at')
             ->limit(1)
-            ->get()[0] ?? null;
+            ->get()->first();
 
         $domain->status_code = $lastCheck->status_code ?? '';
         $domain->h1 = $lastCheck->h1 ?? '';
@@ -65,9 +65,9 @@ class DomainController extends Controller
 
         $perPage = 10;
 
-        if (!is_numeric($page) || ((ceil($countDomain / $perPage) < $page) && $countDomain != 0)) {
-            return back()->with('errors', 'You request is wrong');
-        }
+        // if (!is_numeric($page) || ((ceil($countDomain / $perPage) < $page) && $countDomain != 0)) {
+        //     return back()->with('errors', 'You request is wrong');
+        // }
 
         $offset = ($page - 1) * $perPage;
         
@@ -86,6 +86,7 @@ class DomainController extends Controller
             ->get()->toArray();
         
         $checks = [];
+        
         foreach ($lastChecks as $lastCheck) {
             $checks[$lastCheck->domain_id] = $lastCheck;
         }

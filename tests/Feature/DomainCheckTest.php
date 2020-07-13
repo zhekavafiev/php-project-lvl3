@@ -4,14 +4,11 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Faker\Factory;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class DomainCheckTest extends TestCase
 {
-    use DatabaseMigrations;
-
     private $domainForTest;
 
     protected function setUp(): void
