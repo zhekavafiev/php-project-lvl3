@@ -16,11 +16,7 @@ class DomainCheckController extends Controller
                 'domain_id' => $id,
                 'created_at' => $date
             ]);
-
-        // $check = DB::table('domain_checks')
-        //     ->where('id', $checkId)
-        //     ->get()->first();
-        // dd($checkId);
+            
         GetSEO::dispatchAfterResponse($checkId);
 
         session()->flash(
