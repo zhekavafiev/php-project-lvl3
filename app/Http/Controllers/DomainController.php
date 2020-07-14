@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Src\StateMachine\StateMachine\StateMachine;
 
 class DomainController extends Controller
 {
@@ -58,6 +59,23 @@ class DomainController extends Controller
 
     public function index(Request $request)
     {
+        $sm = new StateMachine();
+        // $sm->acceptTransitionByName('send_in_work');
+        // $sm->acceptTransitionByName('finished');
+        // $sm->acceptTransitionByName('finished_with_error');
+        
+        $state = $sm->getCurrentState()->getName();
+        $check = DB::table('domain_checks')->get()->first();
+        DB::table('domain_checks')
+            ->where('id', $check->id)
+            ->update(['state' => $state]);
+        $print = DB::table('domain_checks')
+            ->where('id', $check->id)
+            ->get()->first();
+        dd($print);
+        
+        
+        
         $page = empty($request['page']) ? 1 : $request['page'];
 
         $countDomain = DB::table('domains')
