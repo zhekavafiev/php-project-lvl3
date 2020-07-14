@@ -14,7 +14,8 @@
         "guzzlehttp/guzzle": "^6.3",
         "imangazaliev/didom": "^1.16",
         "laravel/framework": "^7.0",
-        "laravel/tinker": "^2.0"
+        "laravel/tinker": "^2.0",
+        "zinovyev/php-fsm": "^0.6.5"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

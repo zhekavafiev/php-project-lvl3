@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a3d14fe91b953bda25d9d3017c2d874a",
+    "content-hash": "7a0ad1188b6ffbf9a274063c3feb029e",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3805,6 +3805,50 @@
                 "php"
             ],
             "time": "2020-06-15T23:49:30+00:00"
+        },
+        {
+            "name": "zinovyev/php-fsm",
+            "version": "v0.6.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zinovyev/php-fsm.git",
+                "reference": "9c1fcb570a2f4d9e47485dc33f64d07060eab00d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zinovyev/php-fsm/zipball/9c1fcb570a2f4d9e47485dc33f64d07060eab00d",
+                "reference": "9c1fcb570a2f4d9e47485dc33f64d07060eab00d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FSM\\": "src/FSM"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPLv2"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Zinovyev",
+                    "email": "ivan@zinovyev.net"
+                }
+            ],
+            "description": "PHP Finite-state Machine",
+            "keywords": [
+                "automaton",
+                "finite-state",
+                "machine",
+                "state",
+                "statemachine",
+                "transition"
+            ],
+            "time": "2014-05-20T11:08:04+00:00"
         }
     ],
     "packages-dev": [
