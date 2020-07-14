@@ -20,7 +20,7 @@ class DomainCheckController extends Controller
         GetSEO::dispatchAfterResponse($checkId);
 
         session()->flash(
-            'message',
+            'messages',
             "Your request is being processed. 
             If data is not selected, try refreshing the page later"
         );

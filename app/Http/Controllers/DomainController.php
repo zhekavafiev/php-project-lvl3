@@ -103,21 +103,22 @@ class DomainController extends Controller
         $request->validate([
             'name' => 'url'
         ]);
-
         $parsedName = parse_url($request->input('name'));
         $name = "{$parsedName['scheme']}://{$parsedName['host']}";
         try {
             $query = DB::table('domains')
                 ->select('id')
                 ->where('name', $name)
-                ->get();
-            $id = $query[0]->id;
-            session()->flash('errors', "Domen {$name} has been checked early");
+                ->get()->first();
+            $id = $query->id;
+            $error = ["Domen {$name} has been checked early"];
+            session()->flash('errors', collect($error));
             return redirect()->route('domains.show', ['id' => $id]);
         } catch (\Exception $error) {
             $date = Carbon::now();
             DB::insert('insert into domains (name, created_at) values (?, ?)', [$name, $date]);
-            session()->flash('message', "Domain {$name} has added");
+            $message = "Domain {$name} has added";
+            session()->flash('messages', $message);
             $query = DB::select('Select id from domains where name = ?', [$name]);
             $id = $query[0]->id;
             return redirect()->route('domains.show', $id);

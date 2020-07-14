@@ -33,7 +33,6 @@ class DomainControllerTest extends TestCase
     {
         $response = $this->get(route('domains.show', ['id' => $this->id]));
         $response->assertStatus(200);
-        $response->assertSessionHasNoErrors();
     }
 
     public function testDomainPageNotHasOnDB()
