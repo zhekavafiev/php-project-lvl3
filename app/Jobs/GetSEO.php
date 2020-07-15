@@ -2,32 +2,26 @@
 
 namespace App\Jobs;
 
-use Illuminate\Bus\Queueable;
+use DiDom\Document;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
-use DiDom\Document;
-use Src\Seo\SeoHelper as SeoHelper;
 use Illuminate\Support\Facades\DB;
+use Src\StateMachine\StateMachine\StateMachine;
 
 class GetSEO implements ShouldQueue
 {
     use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
 
-    private $check;
+    private $checkId;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($check)
+    public function __construct($checkId)
     {
-        $this->check = $check;
+        $this->checkId = $checkId;
     }
 
     /**
@@ -37,38 +31,68 @@ class GetSEO implements ShouldQueue
      */
     public function handle()
     {
-        $domenName = DB::table('domains')
-            ->select('name')
-            ->where('id', $this->check->domain_id)
-            ->get()->toArray()[0]->name;
+        $sm = new StateMachine();
+
+        $domain = DB::table('domains')
+            ->join('domain_checks', 'domain_checks.domain_id', '=', 'domains.id')
+            ->select(
+                'domains.id as id',
+                'name',
+                'domain_checks.created_at as last_check'
+            )
+            ->where('domain_checks.id', $this->checkId)
+            ->get()->first();
+
+        $domenName = $domain->name;
+        $lastCheck = $domain->last_check;
+        
         try {
             $response = Http::get($domenName);
             $status = $response->status();
-            $document = new Document($response->body());
-            $seo = new SeoHelper($document);
-            $headlineH1 = $seo->getHeadline('h1');
-            $keywords = $seo->getMetaContent('keywords');
-            $description = $seo->getMetaContent('description');
+            $html = $response->body();
+            $document = new Document($html);
+            // в данных случаях нет защиты на длину строки
+            // если большее 255 символов то получим 500 из за БД
+            if ($document->has('h1')) {
+                $headlineH1 = $document->find('h1')[0]->text();
+            } else {
+                $headlineH1 = '';
+            }
+
+            if ($document->has("meta[name=keywords]")) {
+                $keywords = $document->find("meta[name=keywords]::attr(content)")[0];
+            } else {
+                $keywords = '';
+            }
+            
+            if ($document->has("meta[name=description]")) {
+                $description = $document->find("meta[name=description]::attr(content)")[0];
+            } else {
+                $description = '';
+            }
+            $sm->acceptTransitionByName('finished');
+            $state = $sm->getCurrentState()->getName();
         } catch (\Exception $e) {
-            $status = 500;
+            $status = 000;
             $headlineH1 = '';
             $keywords = '';
-            $description = '';
+            $description = $e->getMessage();
+            $sm->acceptTransitionByName('finished_with_error');
+            $state = $sm->getCurrentState()->getName();
         }
-
-        $lastcheck = $this->check->created_at;
         
         DB::table('domains')
-            ->where('id', $this->check->domain_id)
-            ->update(['updated_at' => $lastcheck]);
+            ->where('id', $domain->id)
+            ->update(['updated_at' => $lastCheck]);
         
         DB::table('domain_checks')
-            ->where('id', $this->check->id)
+            ->where('id', $this->checkId)
             ->update([
                 'h1' => $headlineH1,
                 'keywords' => $keywords,
                 'description' => $description,
-                'status_code' => $status
+                'status_code' => $status,
+                'state' => $state
             ]);
     }
 }

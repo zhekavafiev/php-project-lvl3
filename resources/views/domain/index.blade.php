@@ -1,13 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-@if(Session::has('message'))
-  <div class="alert alert-success">  {{ Session::get('message') }}</div>
-@endif
-@if(Session::has('errors'))
-  <div class="alert alert-danger">  {{ Session::get('errors') }}</div>
-@endif
-
 {{ $domains->links() }}
 <table class="table">
   <thead class="thead-dark">
@@ -25,8 +18,8 @@
         <th scope="row"> {{ $domain->id }} </th>
         <td><a href="{{route('domains.show', $domain->id)}}">{{ $domain->name }}</a></td>
         <td>{{ $domain->created_at }}</td>
-        <td>{{ $domain->last_check }}</td>
-        <td>{{ $domain->status_code }}</td>
+        <td>{{ $checks[$domain->id]->created_at ?? null}}</td>
+        <td>{{ $checks[$domain->id]->status_code ?? null}}</td>
       </tr>
     @endforeach
   </tbody>

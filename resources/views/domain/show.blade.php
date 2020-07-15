@@ -1,14 +1,6 @@
 @extends('layouts.app')
 
 @section("content")
-@if(Session::has('errors'))
-  <div class="alert alert-danger">  {{ Session::get('errors') }}</div>
-@endif
-
-@if(Session::has('message'))
-  <div class="alert alert-success">  {{ Session::get('message') }}</div>
-@endif
-
 <table class="table table-striped table-sm">
   <tbody>
       <tr>

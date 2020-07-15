@@ -13,6 +13,17 @@
     </header>
     <main role="main" class="flex-shrink-0">
       <div class="container">
+        @if(Session::has('errors'))
+          <div class="alert alert-danger">
+              @foreach ($errors->all() as $error)
+                {{ $error }}
+              @endforeach
+          </div>
+        @endif
+      @if(Session::has('messages'))
+        <div class="alert alert-success">  {{ Session::get('messages') }}</div>
+      @endif
+      
         @yield("content")
       </div>
     </main>

@@ -16,17 +16,13 @@ class DomainCheckController extends Controller
                 'domain_id' => $id,
                 'created_at' => $date
             ]);
-
-        $check = DB::table('domain_checks')
-            ->select('*')
-            ->where('id', $checkId)
-            ->get()->first();
-
-        GetSEO::dispatchAfterResponse($check);
+        // уброл сущность из конструктора Джоба передал айди
+        // но в джобе на всякий случай запустил стейт машину
+        GetSEO::dispatchAfterResponse($checkId);
 
         session()->flash(
-            'message',
-            "Your request is being processed. 
+            'messages',
+            "Your request is being processed by number {$checkId}. 
             If data is not selected, try refreshing the page later"
         );
 
