@@ -79,8 +79,6 @@ class DomainController extends Controller
         
         $checks = [];
         
-        //сопоставил индексы в массиве проверок с айди домена
-        //чтобы во вьюхе было проще до них добраться
         foreach ($lastChecks as $lastCheck) {
             $checks[$lastCheck->domain_id] = $lastCheck;
         }

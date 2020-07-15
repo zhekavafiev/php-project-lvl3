@@ -16,8 +16,7 @@ class DomainCheckController extends Controller
                 'domain_id' => $id,
                 'created_at' => $date
             ]);
-        // уброл сущность из конструктора Джоба передал айди
-        // но в джобе на всякий случай запустил стейт машину
+            
         GetSEO::dispatchAfterResponse($checkId);
 
         session()->flash(

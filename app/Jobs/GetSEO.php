@@ -51,8 +51,7 @@ class GetSEO implements ShouldQueue
             $status = $response->status();
             $html = $response->body();
             $document = new Document($html);
-            // в данных случаях нет защиты на длину строки
-            // если большее 255 символов то получим 500 из за БД
+            
             if ($document->has('h1')) {
                 $headlineH1 = $document->find('h1')[0]->text();
             } else {
