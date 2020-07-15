@@ -6,9 +6,8 @@ use DiDom\Document;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Http;
-use Src\Seo\SeoHelper as SeoHelper;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Src\StateMachine\StateMachine\StateMachine;
 
 class GetSEO implements ShouldQueue
 {
@@ -32,6 +31,8 @@ class GetSEO implements ShouldQueue
      */
     public function handle()
     {
+        $sm = new StateMachine();
+
         $domain = DB::table('domains')
             ->join('domain_checks', 'domain_checks.domain_id', '=', 'domains.id')
             ->select(
@@ -50,7 +51,8 @@ class GetSEO implements ShouldQueue
             $status = $response->status();
             $html = $response->body();
             $document = new Document($html);
-
+            // в данных случаях нет защиты на длину строки
+            // если большее 255 символов то получим 500 из за БД
             if ($document->has('h1')) {
                 $headlineH1 = $document->find('h1')[0]->text();
             } else {
@@ -68,11 +70,15 @@ class GetSEO implements ShouldQueue
             } else {
                 $description = '';
             }
+            $sm->acceptTransitionByName('finished');
+            $state = $sm->getCurrentState()->getName();
         } catch (\Exception $e) {
-            $status = 500;
+            $status = 000;
             $headlineH1 = '';
             $keywords = '';
             $description = $e->getMessage();
+            $sm->acceptTransitionByName('finished_with_error');
+            $state = $sm->getCurrentState()->getName();
         }
         
         DB::table('domains')
@@ -85,12 +91,8 @@ class GetSEO implements ShouldQueue
                 'h1' => $headlineH1,
                 'keywords' => $keywords,
                 'description' => $description,
-                'status_code' => $status
+                'status_code' => $status,
+                'state' => $state
             ]);
-    }
-
-    private function getInfo()
-    {
-
     }
 }

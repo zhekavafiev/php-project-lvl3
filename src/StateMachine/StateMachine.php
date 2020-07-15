@@ -24,7 +24,7 @@ class StateMachine extends Client
         $stateFinished->setType(StateInterface::TYPE_FINITE);
 
         $stateError = new StateEndWithError();
-        $stateError->setName('error');
+        $stateError->setName('finished_with_error');
         $stateError->setType(StateInterface::TYPE_FINITE);
 
         $this
@@ -33,6 +33,6 @@ class StateMachine extends Client
             ->addState($stateError)
             ->setInitialState($stateCreated)
             ->createTransition('finished', 'created', 'finished')
-            ->createTransition('finished_with_error', 'created', 'error');
+            ->createTransition('finished_with_error', 'created', 'finished_with_error');
     }
 }

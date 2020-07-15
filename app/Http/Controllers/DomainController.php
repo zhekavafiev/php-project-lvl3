@@ -17,11 +17,7 @@ class DomainController extends Controller
         $countChecks = DB::table('domain_checks')
             ->where('domain_id', $id)
             ->count();
-
-        // if (!is_numeric($page) || ((ceil($countChecks / $perPage) < $page) && $countChecks != 0)) {
-        //     return back()->with('errors', 'You request is wrong');
-        // }
-
+        
         $offset = ($page - 1) * $perPage;
 
         $domain = DB::table('domains')->find($id) ?? null;
@@ -59,30 +55,12 @@ class DomainController extends Controller
 
     public function index(Request $request)
     {
-        // $check = DB::table('domain_checks')->get()->first();
-        // $sm = new StateMachine();
-        // $sm->check = $check;
-        // // $sm->acceptTransitionByName('send_in_work');
-        // // $sm->acceptTransitionByName('finished');
-        // // $sm->acceptTransitionByName('finished_with_error');
-        
-        // $state = $sm->getCurrentState()->getName();
-        
-        
-        // dd($print);
-        
-        
-        
         $page = empty($request['page']) ? 1 : $request['page'];
 
         $countDomain = DB::table('domains')
             ->count();
 
         $perPage = 10;
-
-        // if (!is_numeric($page) || ((ceil($countDomain / $perPage) < $page) && $countDomain != 0)) {
-        //     return back()->with('errors', 'You request is wrong');
-        // }
 
         $offset = ($page - 1) * $perPage;
         
@@ -102,6 +80,8 @@ class DomainController extends Controller
         
         $checks = [];
         
+        //сопоставил индексы в массиве проверок с айди домена
+        //чтобы во вьюхе было проще до них добраться
         foreach ($lastChecks as $lastCheck) {
             $checks[$lastCheck->domain_id] = $lastCheck;
         }
