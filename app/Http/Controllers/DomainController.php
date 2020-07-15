@@ -59,20 +59,17 @@ class DomainController extends Controller
 
     public function index(Request $request)
     {
-        $sm = new StateMachine();
-        // $sm->acceptTransitionByName('send_in_work');
-        // $sm->acceptTransitionByName('finished');
-        // $sm->acceptTransitionByName('finished_with_error');
+        // $check = DB::table('domain_checks')->get()->first();
+        // $sm = new StateMachine();
+        // $sm->check = $check;
+        // // $sm->acceptTransitionByName('send_in_work');
+        // // $sm->acceptTransitionByName('finished');
+        // // $sm->acceptTransitionByName('finished_with_error');
         
-        $state = $sm->getCurrentState()->getName();
-        $check = DB::table('domain_checks')->get()->first();
-        DB::table('domain_checks')
-            ->where('id', $check->id)
-            ->update(['state' => $state]);
-        $print = DB::table('domain_checks')
-            ->where('id', $check->id)
-            ->get()->first();
-        dd($print);
+        // $state = $sm->getCurrentState()->getName();
+        
+        
+        // dd($print);
         
         
         

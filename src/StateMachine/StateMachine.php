@@ -17,12 +17,7 @@ class StateMachine extends Client
 
         $stateCreated = new StateCreated();
         $stateCreated->setName('created');
-        // для чего установка через интерфейсы?
         $stateCreated->setType(StateInterface::TYPE_INITIAL);
-
-        $stateInWork = new StateInWork();
-        $stateInWork->setName('in_work');
-        $stateInWork->setType(StateInterface::TYPE_REGULAR);
 
         $stateFinished = new StateFinished();
         $stateFinished->setName('finished');
@@ -34,12 +29,10 @@ class StateMachine extends Client
 
         $this
             ->addState($stateCreated)
-            ->addState($stateInWork)
             ->addState($stateFinished)
             ->addState($stateError)
             ->setInitialState($stateCreated)
-            ->createTransition('send_in_work', 'created', 'in_work')
-            ->createTransition('finished', 'in_work', 'finished')
-            ->createTransition('finished_with_error', 'in_work', 'error');
+            ->createTransition('finished', 'created', 'finished')
+            ->createTransition('finished_with_error', 'created', 'error');
     }
 }

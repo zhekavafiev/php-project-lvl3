@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use DiDom\Document;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Http;
@@ -48,15 +49,30 @@ class GetSEO implements ShouldQueue
             $response = Http::get($domenName);
             $status = $response->status();
             $html = $response->body();
-            $seo = new SeoHelper($html);
-            $headlineH1 = $seo->getHeadline('h1');
-            $keywords = $seo->getMetaContent('keywords');
-            $description = $seo->getMetaContent('description');
+            $document = new Document($html);
+
+            if ($document->has('h1')) {
+                $headlineH1 = $document->find('h1')[0]->text();
+            } else {
+                $headlineH1 = '';
+            }
+
+            if ($document->has("meta[name=keywords]")) {
+                $keywords = $document->find("meta[name=keywords]::attr(content)")[0];
+            } else {
+                $keywords = '';
+            }
+            
+            if ($document->has("meta[name=description]")) {
+                $description = $document->find("meta[name=description]::attr(content)")[0];
+            } else {
+                $description = '';
+            }
         } catch (\Exception $e) {
             $status = 500;
             $headlineH1 = '';
             $keywords = '';
-            $description = '';
+            $description = $e->getMessage();
         }
         
         DB::table('domains')
@@ -71,5 +87,10 @@ class GetSEO implements ShouldQueue
                 'description' => $description,
                 'status_code' => $status
             ]);
+    }
+
+    private function getInfo()
+    {
+
     }
 }
