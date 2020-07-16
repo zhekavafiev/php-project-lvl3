@@ -52,23 +52,16 @@ class GetSEO implements ShouldQueue
             $html = $response->body();
             $document = new Document($html);
             
-            if ($document->has('h1')) {
-                $headlineH1 = $document->find('h1')[0]->text();
-            } else {
-                $headlineH1 = '';
-            }
+            $headlineH1 = $document->has('h1') ? $document->find('h1')[0]->text() : '';
 
-            if ($document->has("meta[name=keywords]")) {
-                $keywords = $document->find("meta[name=keywords]::attr(content)")[0];
-            } else {
-                $keywords = '';
-            }
+            $keywords = $document->has("meta[name=keywords]")
+                ? $document->find("meta[name=keywords]::attr(content)")[0]
+                : '';
             
-            if ($document->has("meta[name=description]")) {
-                $description = $document->find("meta[name=description]::attr(content)")[0];
-            } else {
-                $description = '';
-            }
+            $description = $document->has("meta[name=description]")
+                ? $document->find("meta[name=description]::attr(content)")[0]
+                : '';
+
             $sm->acceptTransitionByName('finished');
             $state = $sm->getCurrentState()->getName();
         } catch (\Exception $e) {
