@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
-use Src\StateMachine\StateMachine\StateMachine;
+use Src\StateMachine\StateMachine;
 
 class GetSEO implements ShouldQueue
 {

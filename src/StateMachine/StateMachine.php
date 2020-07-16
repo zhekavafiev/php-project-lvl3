@@ -1,9 +1,8 @@
 <?php
 
-namespace Src\StateMachine\StateMachine;
+namespace Src\StateMachine;
 
 use FSM\Client;
-use Src\StateMachine\States\InWork\StateInWork;
 use Src\StateMachine\States\EndWithError\StateEndWithError;
 use Src\StateMachine\States\Finished\StateFinished;
 use Src\StateMachine\States\Created\StateCreated;
