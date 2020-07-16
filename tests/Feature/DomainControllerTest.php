@@ -16,6 +16,7 @@ class DomainControllerTest extends TestCase
         parent::setUp();
         $domain['name'] = 'http://example.com';
         $this->id = DB::table('domains')->insertGetId($domain);
+        
         $check = [
             'domain_id' => $this->id,
             'created_at' => Carbon::now(),
