@@ -33,18 +33,12 @@ class GetSEO implements ShouldQueue
     {
         $sm = new StateMachine();
 
-        $domain = DB::table('domains')
-            ->join('domain_checks', 'domain_checks.domain_id', '=', 'domains.id')
-            ->select(
-                'domains.id as id',
-                'name',
-                'domain_checks.created_at as last_check'
-            )
-            ->where('domain_checks.id', $this->checkId)
-            ->get()->first();
+        $check = DB::table('domain_checks')->find($this->checkId);
+
+        $domain = DB::table('domains')->find($check->domain_id);
 
         $domenName = $domain->name;
-        $lastCheck = $domain->last_check;
+        $latestCheck = $check->created_at;
         
         try {
             $response = Http::get($domenName);
@@ -75,7 +69,7 @@ class GetSEO implements ShouldQueue
         
         DB::table('domains')
             ->where('id', $domain->id)
-            ->update(['updated_at' => $lastCheck]);
+            ->update(['updated_at' => $latestCheck]);
         
         DB::table('domain_checks')
             ->where('id', $this->checkId)

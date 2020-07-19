@@ -33,7 +33,7 @@
       </tr>
   </tbody>
 </table>
-<form class="form-inline mt-2 mt-md-0" action="{{route('check', $domain->id)}}" method="post">
+<form class="form-inline mt-2 mt-md-0" action="{{route('domain_checks.store', $domain->id)}}" method="post">
     {{ csrf_field() }}
     <input class="btn btn-secondary btn-lg btn-block" type="submit" value="Run check">
 </form><br>

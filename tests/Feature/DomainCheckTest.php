@@ -34,7 +34,7 @@ class DomainCheckTest extends TestCase
             'description' => 'descriptionTest',
         ];
 
-        $response = $this->post(route('check', ['id' => $this->id]));
+        $response = $this->post(route('domain_checks.store', ['id' => $this->id]));
         $response->assertStatus(302);
         $response->assertSessionHasNoErrors();
         $this->assertDatabaseHas('domain_checks', $expected);

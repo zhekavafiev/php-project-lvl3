@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class DomainCheckController extends Controller
 {
-    public function check($id)
+    public function store($id)
     {
         $date = Carbon::now();
         $checkId = DB::table('domain_checks')
