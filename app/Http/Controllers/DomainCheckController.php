@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\GetSEO;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DomainCheckController extends Controller
 {
@@ -16,7 +17,7 @@ class DomainCheckController extends Controller
                 'domain_id' => $id,
                 'created_at' => $date
             ]);
-            
+        Log::info($checkId);
         GetSEO::dispatchAfterResponse($checkId);
 
         session()->flash(
