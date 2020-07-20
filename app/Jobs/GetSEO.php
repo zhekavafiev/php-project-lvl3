@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Src\StateMachine\StateMachine;
 
 class GetSEO implements ShouldQueue
@@ -39,6 +40,7 @@ class GetSEO implements ShouldQueue
 
         $domenName = $domain->name;
         $latestCheck = $check->created_at;
+        Log::info($domenName);
         
         try {
             $response = Http::get($domenName);
