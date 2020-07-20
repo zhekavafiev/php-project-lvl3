@@ -40,7 +40,6 @@ class GetSEO implements ShouldQueue
 
         $domenName = $domain->name;
         $latestCheck = $check->created_at;
-        Log::info($domenName);
         
         try {
             $response = Http::get($domenName);
